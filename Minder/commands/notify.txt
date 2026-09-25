@@ -1,0 +1,52 @@
+from disnake import ApplicationCommandInteraction as Dinter
+from disnake.ext import commands as com
+
+from mongo import udb, readSet
+
+from traceback import format_exc as error
+
+def command(client):
+  remind_opts = {"Bumps": 0, "Relatório próximo": 1}
+  @client.slash_command(name="notify")
+  async def sremind(
+      inter: Dinter,
+      notificação: com.option_enum(remind_opts)
+  ):
+    """
+    ⏰┃Seja notificado em momentos específicos!
+    Parameters
+    ----------
+    notificação: Pelo que quer ser notificado?
+    """
+    notif = notificação
+    user = inter.author
+
+    if notif == 0:
+      guild = user.guild
+      bumprole = guild.get_role(1112017303580708936)
+
+      if bumprole in user.roles:
+        await user.remove_roles(bumprole)
+        return await inter.response.send_message(":red_circle: **Notificação por bump desativada**", ephemeral=True)
+      else:
+        await user.add_roles(bumprole)
+        return await inter.response.send_message(":green_circle: **Notificação por bump ativada**\n\n> Você será notificado sempre que houver um `/bump` próximo. Use o comando novamente para desativar", ephemeral=True)
+    elif notif == 1:
+      vRelator = udb.find_one({'uid': user.id, 'relat': {'$exists': True}})
+      if not vRelator:
+        return await inter.response.send_message("Você ainda não é um <@&1092918220400369775> para enviar relatórios. Torne-se um usando o comando `/mission set`")
+      fields = ['rnearby']
+      field = fields[notif - 1]
+      notifys_descs = []
+      readSet(user.id, f'notifys.{field}', 0)
+  
+      udata = udb.find_one({'uid': user.id})['notifys']
+  
+      if udata[field] == 0:
+        await inter.response.send_message(":green_circle: **Notificação de relatório ativada**\n\n> Você será notificado sempre que tiver um relatório próximo para enviar. Use o comando novamente para desativar", ephemeral=True)
+      else:
+        await inter.response.send_message(":red_circle: **Notificação de relatório desativada**", ephemeral=True)
+  
+      udb.update_one({'uid': user.id}, {
+        '$bit': {f'notifys.{field}': {'xor': 1}}
+      })

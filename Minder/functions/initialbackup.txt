@@ -1,0 +1,238 @@
+import disnake
+
+async def initial(mode='cmds', bot):
+  if mode == 'cmds':
+	  chat = bot.get_channel(1138573308837777568)
+	  await chat.purge(limit=None)
+
+	  """
+	  with open('comandos.gif', 'rb') as file: gif = disnake.File(file)
+	  await chat.send(file=gif)
+
+	  await chat.send("‎\n\n\n‎")
+	  """
+	  
+	  with open('Divider_up.png', 'rb') as file: div_up = disnake.File(file)
+	  await chat.send(file=div_up)
+
+	  with open('Divider_down.png', 'rb') as file: div_down = disnake.File(file)
+
+	  with open('void.gif', 'rb') as file: void = disnake.File(file)
+	  await chat.send(file=void)
+
+	  emb2 = disnake.Embed(
+	    description=f'## :page_facing_up: Comandos de relator\n### </mission set:1166864611199434895>\n* Ajuda a criar disciplina, fortalece o hábito de estudar e te ajuda a consolidar os conteúdos\n> Ao usá-lo, você ganha **10.0** <:blank:1124439750208655500> e se torna um **relator**, alguém que escreve relatórios sobre o que estudou/revisou no dia.\n\n> Se você já for um relator, usar esse comando atualizará seu horário de envio\n\n**▬▬▬▬▬▬▬▬▬▬**\n### </mission send:1166864611199434895>\n- Envia seu relatório\n\n**▬▬▬▬▬▬▬▬▬▬**\n### </mission giveup:1166864611199434895>\n- Faz você deixar de ser um relator\n> Você não perderá <:blank:1124439750208655500> por essa escolha',
+	    colour = 0x33FF33
+	  )
+	  emb3 = disnake.Embed(
+	    description=f'## :chart_with_upwards_trend: Comandos estatísticos\n### </stats:1137464281756090511>\n- **Parâmetro opcional: `[meta]`**\n> Mostra suas estatísticas, como **quantidade de blanks, tempo em calls, posição nos rankings, nível**. Se você for um **relator**, esse comando mostrará dados adicionais\n\n> Usar o parâmetro `[meta]` define uma meta de horas diárias para você estudar\n\n**▬▬▬▬▬▬▬▬▬▬**\n### </top:1137464281756090512>\n- **Parâmetro opcional: `[categoria]`**\n> Mostra o ranking dos 10 melhores membros e seu ranking comparado com eles.\n\n> Usar o parâmetro `[categoria]` te permite escolher os top 10 baseado em uma estatística específica',
+		colour = 0x836FFF
+	  )
+	  emb5 = disnake.Embed(
+	    description=f'## <a:cronocard:1142933723097084014> Comandos de cartas\n### </cronocard roll:1142940210649387018>  (Custa **1.5** <:blank:1124439750208655500>)\n- Procure novas cartas\n> **Cronocards** são cartas que simbolizam pessoas influentes ao longo da história, cada uma com um superpoder. Ao usar esse comando, é possível uma carta de raridade aleatória baseada no quão forte é o superpoder da pessoa da carta:\n\n<:L1:1142498467818782831> **Lendária (1% de chance)**\n<:E1:1142498412391043076> Épica (4% de chance)\n<:R1:1142496422948786201> Rara (15% de chance)\n<:I1:1142495469717684236> Incomum (30% de chance)\n<:C1:1142494346696982650> Comum (50% de chance)\n\n> Se você optar por coletar a carta encontrada para sua coleção, a carta custará um certo número de <:blank:1124439750208655500> baseado em sua raridade. Você ganhará poder adquirindo cartas\n\n**▬▬▬▬▬▬▬▬▬▬**\n### </cronocard list:1142940210649387018>\n* Veja sua coleção de cartas. Também mostra as cartas não encontradas',
+        colour=0xf1de52
+	  )
+	  emb7 = disnake.Embed(
+	    colour=0x000000,
+	    description=f'## <:blank:1124439750208655500> Comandos monetários\n### </blank pay:1198736232113504357>\n- Pague um usuário\n\n**▬▬▬▬▬▬▬▬▬▬**\n### </blank loan:1198736232113504357>\n- Cria um contrato de empréstimo (Só é válido se o outro usuário concordar)\n> O contrato consiste em você dar **X blanks** a um usuário e, todo dia, durante **Y dias**, o sistema te dará **Z blanks** desse usuário.\n\n> Se o usuário não pagar a dívida a tempo ou sair do server, **você receberá todo o valor restante que o usuário não pagou.**',
+	  )
+	  emb8 = disnake.Embed(
+	    colour=0xf1de52,
+	    description=f'## :boom: Outros comandos \n### </namedisplay:1198342002778062950> (Custa **5.0** <:blank:1124439750208655500>)\n- Vincula ou desvincula uma estatística ao seu nome.\n\n**Exemplos:**\n> **Nome** ➜ Nome sem estatísticas (Desvinculado)\n> **Nome ═ 50.0 𝔅** ➜ Quantidade de blanks\n> **Nome ═ 100h** ➜ Quantidade de horas estudadas em calls\netc.\n\n**▬▬▬▬▬▬▬▬▬▬**\n### </checklist:1138872920362471454>\n- Cria uma checklist automática\n\n> Você pode separar a checklist em tópicos e em tarefas. As tarefas só podem ser finalizadas em ordem e dá pra marcar como concluída ou não concluída dependendo do que você reagir.',
+	  )
+	
+	  embeds = [emb2, emb3, emb5, emb7, emb8]
+	  for i in range(len(embeds)):
+	    await chat.send(embed=embeds[i])
+	    if i < len(embeds):
+	      await chat.send("‎")
+
+	  await chat.send(file=div_down)
+	  await chat.send("‎\n")
+	  await chat.send('<-C->')
+			
+  elif mode == 'marks':
+    chat = await bot.fetch_channel(1137504108497080420)
+    await chat.purge(limit=None)
+    await chat.send("Você pode ler cada parte da enciclopédia como um livro, pois temos **marca página!\n\n> Salve os posts que parou reagindo com :bookmark:\n> Para desmarcar, é só retirar a reação do post**\n▬▬▬▬▬▬▬▬▬▬\n", components=[disnake.ui.Button(label="Suas marcações", style=disnake.ButtonStyle.success, custom_id="post_list")])
+  
+  elif mode == 'rules':
+    chat = bot.get_channel(1127316885046837358)
+    await chat.purge(limit=None)
+    
+    embed = disnake.Embed(
+      title='Regras',
+      description='Como usuário e membro deste servidor, é de suma importância a conformidade com as diretrizes do **[ToS](https://discord.com/terms#1)** e da **[Community guidelines](https://discord.com/guidelines)**.\n▬▬▬▬▬▬▬▬\n### :thumbsup: 1. Seja respeitoso\n> Mantenha o diálogo saudável. **Jamais** propague discursos odiosos, ameaças ou constrangimento\n\n# <a:ultrawarning:1220019342876348448> PROIBIÇÕES:\n### :warning: 2. Poluição de chat \n> Isso inclui flood, spam e utilizar nosso bot de maneira inadequada, fazendo-o enviar várias mensagens num curto espaço de tempo\n### :warning: 3. Autopromoção não autorizada de qualquer tipo\n> É altamente proibido qualquer tipo de divulgação que não tenha sido aprovada. Não divulgue na **DM** de usuários e não mande links de cursos/servidores sem antes consultar <@663525286784139274>\n### :warning: 4. Conteúdo inadequado (NSFW)\n> Inclui vídeos de caráter sexual, perturbador e qualquer tipo de mídia inadequada para menores\n### :warning: 5. Mencionar a staff desnecessariamente\n> Não mencione administradores várias vezes, apenas em situações de emergência, como usuários mal intencionados, raids, etc.',
+      colour=0x7df9ff
+	)
+    embed.set_footer(text='Permanecer neste servidor deixa implicito que você concordou com todas as regras vigentes. Todas as regras estão sujeitas à mudanças.')
+    await chat.send(embed=embed)
+  elif mode == 'roles':
+    try:
+      chat = bot.get_channel(1138572804489490552)
+      guild = chat.guild
+
+      division = """
+▬▬▬
+▬▬▬▬▬
+▬▬▬▬▬▬▬
+▬▬▬▬▬▬▬
+▬▬▬▬▬
+▬▬▬
+"""
+		
+      await chat.purge(limit=None)
+      await chat.send('> Cargos marcados com **"+<:blank:1124439750208655500>"** proporcionam o ganho de **blanks**\n‎')
+      await chat.send(f'{division}# CARGOS SELECIONÁVEIS')
+      
+      embedesco = disnake.Embed(
+        description="## 🎓 Escolaridade\n<@&1115751360344887316>\n<@&1143697792158666856>\n<@&1115751063610470581>\n<@&1115751059692986608>\n<@&1115751050041888931>\n<@&1115750314679730207>",
+        colour=guild.get_role(1115751360344887316).colour
+      )
+      roles = ["Faculdade", "Vestibulando", "3º ano", "2º ano", "1º ano", "Fundamental"]
+      dropdown = disnake.ui.Select(
+        placeholder='Seleção única',
+        options=[disnake.SelectOption(label=role, value=role) for role in roles],
+        custom_id='role_dropdown2',
+        min_values=1,
+        max_values=1
+      )
+      
+      view2 = disnake.ui.View()
+      view2.add_item(dropdown)
+		
+      await chat.send(embed=embedesco, view=view2)
+
+
+      embevest = disnake.Embed(
+        description='## 🎯 Objetivos\n<@&1178025309589745665> ➜ **Exame Nacional do Ensino Médio**\n<@&1178026381586739211> ➜ **ENEM, USP, Unesp, Fuvest..**\n<@&1207455384671883395> ➜ **BACEN, ABIN, INSS, PF...**\n<@&1207455386874150963> ➜ **ITA, IME, EAM, EsPCEx...**',
+        colour=guild.get_role(1178025309589745665).colour
+	  )
+      roles = ["ENEM", "Vestibular", "Concurso Público", "Concurso Militar"]
+      dropdown = disnake.ui.Select(
+        placeholder='Multiseleção',
+        options=[disnake.SelectOption(label=role, value=role) for role in roles],
+        custom_id='role_dropdown3',
+        min_values=0,
+        max_values=len(roles)
+      )
+
+      view3 = disnake.ui.View()
+      view3.add_item(dropdown)
+		
+      await chat.send(embed=embevest, view=view3)
+ 
+
+      embedreg = disnake.Embed(
+        description="## 🌐 Regionais\n<@&1205909270030454835>\n<@&1205908446231138396>\n<@&1205909274207723530>\n<@&1205909278607802479>\n<@&1205909753511804979>",
+        colour=guild.get_role(1205909270030454835).colour
+      )
+      roles = ["Norte", "Nordeste", "Sul", "Sudeste", "Centro-Oeste"]
+      dropdown = disnake.ui.Select(
+        placeholder='Seleção única',
+        options=[disnake.SelectOption(label=role, value=role) for role in roles],
+        custom_id='role_dropdown4',
+        min_values=1,
+        max_values=1
+      )
+
+      view5 = disnake.ui.View()
+      view5.add_item(dropdown)
+		
+      await chat.send(embed=embedreg, view=view5)
+
+      embednot = disnake.Embed(
+        description="## 🔔 Notificáveis\n> Seja notificado em momentos específicos\n\n**<@&1162917883777663037> ➜ Atualizações importantes do server**\n<@&1112017303580708936> **+1.5** <:blank:1124439750208655500> ➜ Hora de bumpar o server\n<@&1139273001154658435> ➜ Pessoas procurando por colegas de estudo\n<@&1138591176681869322> ➜ Prazo de relatório quase acabando**",
+        colour=guild.get_role(1162917883777663037).colour
+      )
+      roles = ["Updates", "Bump", "Study buddy", "Relatórios"]
+      dropdown = disnake.ui.Select(
+        placeholder='Multiseleção',
+        options=[disnake.SelectOption(label=role, value=role) for role in roles],
+        custom_id='role_dropdown1',
+        min_values=0,
+        max_values=len(roles)
+      )
+      
+      view = disnake.ui.View()
+      view.add_item(dropdown)
+		
+      await chat.send(embed=embednot, view=view)
+
+      await chat.send(f'{division}# CARGOS CONDICIONAIS\n> Só podem ser obtidos ao cumprir condições específicas\n‎')
+      embedniv = disnake.Embed(
+        description='## ⏫ Obtiveís por nível\n> Acumule **horas em calls** para subir de nível!\n\n<@&1199039648828235857>\n<@&1168640140395163728>\n<@&1143937396027699352>\n<@&1135629912770891816>\n<@&1132163320179339344>\n<@&1122230870460342412>',
+        colour=0x0072DC
+      )
+
+      embedcom = disnake.Embed(
+        description='## 🤖 Obtíveis por comando\n> Lembre-se de dar uma olhada em <#1138573308837777568> para ver o que esses comandos fazem!\n\n<@&1092918220400369775> **+10.0** <:blank:1124439750208655500> ➜ </mission set:1166864611199434895>\n<@&1134644151883943937> ➜ </focusmode:1213270903014555679>\n<@&1207830254870331412> ➜ </cavemode:1208157538558939156>',
+        colour=0xB9AE9F
+      )
+
+      embedother = disnake.Embed(
+		  description='## 🗿 Situacionais\n<@&1174146227961614467> :lock: **+1.0 ~ 10.0** <:blank:1124439750208655500> ➜ Entre no chat <#1174127784189239377> (Só está disponível para quem tem o nível <@&1132163320179339344> para cima). **Escreva um artigo dentro desse chat sobre algum tema e, se esse artigo for aprovado, ele será enviado para a blankpédia e você ganhará o cargo**\n\n<@&1216770648010002482> ➜ Quando você entrar numa guilda, ganhará um cargo com o nome dessa guilda.\n\n<@&1216771400359219251> ➜ **Impulsione o servidor e crie seu próprio cargo**. Você pode escolher a cor, o nome e o ícone!',
+          colour=0xffba3a
+	  )
+  
+      # Enviar uma mensagem com o menu suspenso
+      embeds = [embedniv, embedcom, embedother]
+      c = 0
+      for embed in embeds:
+        if c == 0: 
+          c = 1
+        else: await chat.send('‎')
+        await chat.send(embed=embed)
+    except: print(error())
+  elif mode == 'chats':
+    chat = bot.get_channel(1138573291829858366)
+    await chat.purge(limit=None)
+    await chat.send('# CHATS DO SERVIDOR\n> Chats ou categorias marcadas com **"+<:blank:1124439750208655500>"** proporcionam o ganho de **blanks**\n‎')
+    embedini = disnake.Embed(
+      description='## <#1126227397663006813>\n> **Área inicial. Fique de olho em tudo que atualiza no server**\n\n<#1127316885046837358> ➜ Regras gerais do server\n\n<#1100915945813319680> ➜ Avisos e atualizações do server e do nosso bot, o **VOID**\n\n<#1138572804489490552> ➜ Todos os cargos do server\n\n<#1138573291829858366> ➜ __Você está aqui__\n\n<#1138573308837777568> ➜ Todos os comandos do server\n\n<#1107757022503510147> ➜ Use comandos do nosso bot e de outros bots aqui!',
+      colour=0xffffff
+    )
+    embedconv = disnake.Embed(
+      description='## <#1124454684837564416>\n> **Interaja com a galera e fique de boas**\n\n▬▬▬▬▬▬▬▬▬▬\n\n<#1093630384174006282> ➜ Chat livre e sem tópico\n\n<#1126493560787714048> ➜ Desabafe aqui e se sinta mais leve\n\n<#1124455706309963817> ➜ Fale mais sobre você e se aproxime da galera\n\n<:private_text_channel:1216785798326910996>ﾠ **║:mortar_board:・chat acadêmico** ➜ Vá em <#1138572804489490552> para alterar\n\n<:private_text_channel:1216785798326910996>ﾠ **║:dart:・chats de vestibulares** ➜ Vá em <#1138572804489490552> para alterar\n\n<#1168716210565808220> ➜ Compartilhe vídeos e imagens\n\n<#1136343230217199787> ➜ Crie guerrinhas :cold_face:\n\n<#1124755293767749796> ➜ Compartilhe seus hobbies e encontre pessoas com gostos parecidos',
+      colour=0xffffff
+    )
+    embedcontri = disnake.Embed(
+      description='## <#1123770807592681565>\n> **Ajude nosso server a crescer! :sunglasses:**\n\n▬▬▬▬▬▬▬▬▬▬\n\n<#1119719224160551063> **+3.0** <:blank:1124439750208655500> ➜ Convide pessoas. Esse chat mostrará quem você convidou e seu número de convites\n\n<#1112018256564326480> **+1.5** <:blank:1124439750208655500> ➜ Bumpe o server a cada 2 horas. Pegue o cargo de notificação para saber a hora de bumpar\n\n<#1123771863802335332> ➜ Dê ideias para o server. Elas serão votadas e consideradas',
+      colour=0xffffff
+    )
+    embedestud = disnake.Embed(
+      description='## <#1093357243040276551>\n> **Estudo direcionado e áreas voltadas para a produtividade**\n\n▬▬▬▬▬▬▬▬▬▬\n\n<#1124333630559367258> ➜ Espaço para postar links, ferramentas e estratégias focadas no estudo\n\n<#1141509793241108592> ➜ Tire suas dúvidas sobre questões ou conteúdos\n\n<#1126331167084388372> ➜ Entre em guildas ou forme grupinhos de estudo. Vocês poderão se juntar em calls. Use o comando </guild create:1216542870593470545> **(100 <:blank:1124439750208655500>)** para criar uma guilda ou o comando </guild invite:1216542870593470545> **(5 <:blank:1124439750208655500>)** para convidar pessoas para sua guilda\n\n<#1135738380555137084> ➜ Os relatórios que os relatores enviam ficam expostos aqui\n\n<#1119710450741940325> ➜ Crie checklists para melhorar seu direcionamento. Também é possível criar uma **checklist automática usando o comando** </checklist:1138872920362471454>\n\n<#1212500548520124447> ➜ Exiba seu domínio ou desdomínio de vocabulário em diferentes idiomas! Perfect',
+      colour=0xffffff
+    )
+    embedsalas = disnake.Embed(
+      description='## <#1126177822818435102> **+?** <:blank:1124439750208655500>\n- Salas de estudo **A**bertas\n> **Estude em calls. Quanto mais tempo conectado, mais <:blank:1124439750208655500> você ganha!** Mas você deve ficar conectado por no mínimo **10 minutos** para ganhar recompensas\n\n▬▬▬▬▬▬▬▬▬▬\n\n<#1133539336378396856>\n<#1133541164960714752>\n<#1133541192622157906>\n<#1207440546205929542>\n<#1207439560020197406>\n\n<#1110688647356895304> ➜ Quando você entrar aqui, a maioria dos chats vai sumir, tirando as distrações\n\n<#1133784766496379011> ➜ **Siga seu próprio pomodoro personalizado!** basta usar o comando </pomodoro:1134174394646794302> para escolher o tempo de estudo e descanso (É 25/5 por padrão)\n\n<#1137041362768900139> ➜ Estude enquanto curte uma musiquinha relaxante\n\n<#1136470255473000480> ➜ Você só consegue permanecer nesse canal se ativar a câmera ou compartilhar a tela! **Essa sala te dá mais blanks**\n\n<#1126180695019102208> ➜ Entre aqui para criar uma sala fechada só pra você. Convide seus amigos usando o comando </room:1126183220124323841>',
+      colour=0xffffff
+    )
+    embedsalasprivadas = disnake.Embed(
+      description='## <#1207442864477577257> **+?** <:blank:1124439750208655500>\n- Salas de estudo **F**echadas\n> **Abriga todas as salas privadas criadas pelos usuários**. Você só pode acessar essa área caso se conecte a <#1126180695019102208> ou seja convidado por alguém.\n\n> :fire: Característica geral das salas privadas: **A recompensa aumenta em 0.01 <:blank:1124439750208655500>/min para cada usuário conectado, mas se algum usuário sair da sala, ela será destruída e todos os outros usuários saírão**. Logo, é um tipo de estudo comprometido.\n\n▬▬▬▬▬▬▬▬▬▬\n\n**<:private_voice_channel:1216789279523471390> 🔒 ⋯ Sala privada normal**\n\n**<:private_voice_channel:1216789279523471390> 🎯 ⋯ Sala de foco** ➜ **Surge quando o dono da sala privada usa o comando </focusmode:1213270903014555679>**. Usar esse comando faz todos da sala entrarem no modo focado, escondendo todos os chats e canais\n\n**<:private_voice_channel:1216789279523471390> 🗻 ⋯ Caverna pessoal** ➜ Aparece sempre que um usuário no modo caverna (que usou o comando </cavemode:1208157538558939156>) cria uma sala privada. Ele só pode ver a própria sala e não pode convidar ninguém (diferente dos outros tipos de sala).\n\n**<:private_voice_channel:1216789279523471390> 💠 ⋯ Sala de guilda** ➜ Surge quando alguém que possui guilda cria uma sala privada. Todos os membros dessa guilda podem se conectar mesmo que não tenham sido convidados; Porém não é possível ter mais de 1 sala da mesma guilda',
+      colour=0xffffff
+    )
+    embedstatus = disnake.Embed(
+      description='## <#1119381667363176518>\n> **Acompanhe seu progresso e receba notificações específicas**\n\n▬▬▬▬▬▬▬▬▬▬\n\n<#1210548638799896606> ➜ Quando estiver fraquejando, sinta-se motivado ao entrar nesse chat <:pepesus:1132703752688775178>\n\n<#1157769760642171023> **+15.0** <:blank:1124439750208655500> ➜ Mostra os nobres da semana (Os usuários com maiores estatísticas). O 1º colocado é chamado de Rei e fica no topo dos cargos. No final da semana, o rei ganha **15 blanks**\n\n<#1202369082251280404> ➜ Mostre suas conquistas recentes para o server\n\n<#1133474876003459112> ➜ Seja notificado sobre subidas de nível, relatório próximo, etc.\n\n<#1119383275320909896> ➜ **O terror dos relatores**. Esse chat retira uma porcentagem dos **blanks** de quem não conseguiu enviar relatório no dia\n\n<#1109998084718612530> ➜ Acompanhe em tempo real há quanto tempo você está numa call de estudo. Assim que você entrar na call, vai começar a contar o tempo, e quando você sair, vai te dizer o tempo total que você esteve conectado',
+      colour=0xffffff
+    )
+    embedlibra = disnake.Embed(
+      description='## <#1197315030341918761>\n> **Área especialmente dedicada a leitores e amantes de livros**\n\n▬▬▬▬▬▬▬▬▬▬\n\n<#1197315654412419183> **+2.5** <:blank:1124439750208655500> ➜ Estoque de livros separados por categorias. Se você postar um livro que alguém tenha pedido, marque a pessoa na sua postagem e ganhe recompensas\n\n<#1197315979710046288> ➜ Se não está encontrando algum livro na biblioteca, peça nesse chat. O bot marcará seu pedido como pendente e, se alguém adicionar seu livro, marcará como atendido (Você será notificado)',
+      colour=0xffffff
+    )
+    embedenciclo = disnake.Embed(
+      description='## <#1137495923170230374>\n> **Nossa grande área do conhecimento que abriga os artigos criados por usuários. Acompanhe assuntos do mais básico ao mais complexo e entenda como tudo se conecta**\n\n▬▬▬▬▬▬▬▬▬▬\n\n<#1174127784189239377> :lock: **+1.0 ~ 10.0** <:blank:1124439750208655500> ➜ Atinja o nível <@&1132163320179339344> Para desbloquear esse chat. Nele, você pode criar rascunhos de artigos e escrever algum conteúdo para adicionar oficialmente à blankpédia!\n\n<#1137504108497080420> ➜ Qualquer post da blankpédia que você reagir com o emoji :bookmark: fica salvo em seu marca-páginas. Entre nesse chat para voltar aos assuntos que estava lendo, sem se perder\n\n<#1145420622575456277>\n<#1137496076954370088>\n<#1137497049022074920>\n<#1137497287648628827>\n<#1137497303016542289>\n<#1137497593929277582>\n<#1137497316694171768>\n<#1137497605564276786>',
+      colour=0xffffff
+    )
+    embeddescon = disnake.Embed(
+      description='## <#1134578673689821224>\n> **Calls normais para descansar e conversar. Você não ganha recompensas e nem tem o tempo contabilizado aqui.**\n\n▬▬▬▬▬▬▬▬▬▬\n\n<#1162148851545809078>\n<#1162148926237986866>\n<#1134579327447617576>\n<#1138636541305028609>\n<#1138636558640107571>',
+      colour=0xffffff
+    )
+
+    embeds = [embedini, embedconv, embedcontri, embedestud, embedstatus, embedsalas, embedsalasprivadas, embedlibra, embedenciclo, embeddescon]
+    c = 0
+    for embed in embeds:
+      if c == 0: 
+        c = 1
+      else: await chat.send('‎')
+      await chat.send(embed=embed)

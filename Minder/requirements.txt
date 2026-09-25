@@ -1,0 +1,7 @@
+disnake
+asyncio
+pymongo
+requests
+plotly
+numpy
+unidecode

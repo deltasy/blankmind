@@ -1,0 +1,5 @@
+disnake
+asyncio
+pymongo
+pytz
+unidecode

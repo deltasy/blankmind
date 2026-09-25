@@ -1,0 +1,33 @@
+trueFocus (page1)
+on_call_state (main)
+comando modelist
+dropdown
+buttons
+
+calls (Copiar tudo)
+linhas 467..., 494, 214 de calls (alteração de id manual)
+
+on_call_state (main) com detectModes
+main importando detectModes
+
+colocar cCamera, cFocus, cArea_category em getSv (page1) e como nao esquecer de deixar global
+
+linha 19 de page1 melhorada
+
+linha 71 de main e adicionar na iniciação de getSv em on_ready o cFreearea_category e cCamera
+
+on voice state update alterado (main)
+
+ativar truefocus em detectModes
+
+pomodoro (commands) alterado
+
+adição do json usercycles
+adição do comando cycles
+
+nova biblioteca: pytz
+
+copiar todos os imports que estao no topo desse main para o outro main
+
+linha 272 de calls mudar valor para o original
+parametros de state mudados
