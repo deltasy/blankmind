@@ -1,60 +1,58 @@
 # Minder Bot — Blank Mind
 
-> **Aviso:** Este repositório é um arquivo histórico e não recebe mais atualizações.
+<p align="center">
+  <a href="README-pt.md">🇧🇷 Read this in Portuguese</a>
+</p>
+<p align="center">
+  <em>Kept online as a historical record of where I started and how a chaotic production environment teaches more than any course.</em>
+</p>
 
-Entre **2023 e 2024**, criei e gerenciei a **Blank Mind**, que cresceu até cerca de **2.000 membros** (1800+ ativos) e se tornou uma das comunidades de estudos brasileiras mais conhecidas no Discord na época. 
 
-**Criei 3 bots:** Minder, Cronos e Corp. Cada bot tinha seus próprios comandos e funcionalidades temáticas
-* **Minder**: Bot principal
-* **Cronos**: Tracker de tempo 
-* **Corp**: Gerenciador de guildas e sub-grupos
+> **Notice:** This repository is a historical archive and is no longer maintained.
 
-Desse trio, o **Minder** era o bot principal: um faz-tudo encarregado desde comandos utilitários, sistema de economia, gamificação e moderação pesada até sistemas específicos da comunidade, como pedidos de livros e a "blankpédia" (um sistema complexo de criação e registro de artigos).
+Between **2023 and 2024**, I founded and managed **Blank Mind**, which grew to approximately **2,000 members** (1,800+ active) and became one of the most prominent Brazilian study communities on Discord at the time.
 
-## Código 100% espaguete
+**I built 3 bots:** Minder, Cronos, and Corp. Each bot had its own commands and thematic features:
+* **Minder**: Core bot
+* **Cronos**: Time tracker
+* **Corp**: Guild and sub-group manager
 
-**Esse projeto foi minha primeira experiência real com programação.** Na prática, o código é um monolito fortemente acoplado, caótico e cheio de gambiarras que ignoram quase todas as boas práticas de engenharia de software.
+Of this trio, **Minder** was the flagship application: a highly versatile bot handling everything from utility commands, economy systems, gamification, and heavy moderation to custom community features like book requests and the "Blankpedia" (a complex article creation and registry system).
 
-Com a comunidade crescendo rápido, o tráfego era alto e constante. Ter centenas de usuários interagindo simultaneamente significava uma enxurrada de testes forçados em produção, em que qualquer bug novo era descoberto em minutos. Durante boa parte desse período, atuei basicamente como um **encanador de código**: passava dias seguidos programando sem parar, apagando incêndios, isolando erros no terminal e segurando as pontas para o servidor não cair.
+## 100% Spaghetti Code
 
-Os maiores pesadelos técnicos que enfrentei foram:
+**This project was my first real-world programming experience.** In practice, the codebase is a tightly coupled monolith, chaotic, and filled with hacky workarounds that bypass almost every software engineering best practice.
 
-* **Cache baseado em arquivos JSON:** Para aliviar chamadas ao banco de dados (MongoDB), usei arquivos JSON locais como camada de cache. Com múltiplos usuários disparando eventos assíncronos ao mesmo tempo, leituras e escritas concorrentes em disco atropelavam umas às outras, gerando *race conditions* severas e perda de dados importantes. Os usuários estudavam várias horas seguidas e podiam perder o registro de tudo de uma vez por causa de uma falha de concorrência.
+With the community growing rapidly, traffic was high and constant. Having hundreds of users interacting simultaneously meant a flood of forced testing in production, where any new bug was discovered in minutes. During much of this period, I essentially operated as a **code plumber**: spending days coding non-stop, putting out production fires, isolating errors in the terminal, and holding everything together to keep the server from crashing.
 
-* **Feature creep descontrolado:** Toda semana surgia uma ideia nova para a comunidade. Em vez de modularizar ou separar responsabilidades, fui empilhando funcionalidades dentro do mesmo bot até ele virar um sistema complexo demais para um projeto só.
+The biggest technical nightmares I faced were:
 
-* **Testabilidade zero:** Como a regra de negócio estava colada diretamente nos eventos da API do Discord, testar qualquer alteração exigia subir o bot inteiro e simular comandos manualmente. Consertar um bug num comando utilitário frequentemente quebrava algo na moderação.
+* **JSON File-Based Caching:** To reduce database (MongoDB) calls, I used local JSON files as a caching layer. With multiple users triggering asynchronous events simultaneously, concurrent disk reads and writes collided, generating severe *race conditions* and data loss. Users who studied for several hours straight could lose all their logs at once due to a concurrency failure.
+* **Uncontrolled Feature Creep:** Every week brought a new idea for the community. Instead of modularizing or separating responsibilities, I kept stacking features into the same bot until it became far too complex for a single project scope.
+* **Zero Testability:** Because the business logic was tightly coupled directly to the Discord API events, testing any change required spinning up the entire bot and manually simulating commands. Fixing a bug in a utility command frequently broke something in the moderation module.
 
-Apesar da bagunça estrutural, foi esse ambiente de pressão real que me ensinou a ler *stack traces*, lidar com concorrência na marra e resolver problemas de verdade fora de tutoriais.
+Despite the structural mess, this high-pressure real-world environment taught me how to read stack traces, handle concurrency the hard way, and solve actual engineering problems outside of isolated tutorials.
 
-## O que eu faria diferente hoje
+## What I Would Do Differently Today
 
-Olhando para trás com a bagagem que tenho hoje, mudaria muitas coisas, principalmente:
+Looking back with the architectural knowledge I have today, I would change almost everything, primarily:
 
-1. **Fim do cache em arquivos JSON:** Substituiria toda a gambiarra de I/O em arquivos locais por **Redis** para cache em memória com operações atômicas e controle de sessão/rate-limit, aliado a um banco de dados relacional (**PostgreSQL**) com transações ACID garantidas por um ORM bem tipado, evitando corrupção de dados em eventos simultâneos.
+1. **End the JSON Cache:** I would replace the messy local I/O operations with **Redis** for in-memory caching with atomic operations and session/rate-limit control. I would pair this with a relational database (**PostgreSQL**) featuring ACID transactions backed by a strictly typed ORM, preventing data corruption during simultaneous events.
+2. **Decouple the Discord API:** I would separate the interaction layer (Discord cogs and events) from the domain logic. The bot's commands would merely consume isolated services, allowing the business logic to be unit-tested without relying on a Discord connection.
+3. **Automated Testing and CI/CD:** I would implement unit and integration tests running on an automated pipeline (GitHub Actions) before any deployment, eliminating the need to manually test everything in production.
+4. **Containers and Observability:** I would replace manual deployments with **Docker** containers featuring structured logging, making exception tracking straightforward without having to hunt for lost print statements in a console.
 
-2. **Desacoplamento da API do Discord:** Separaria a camada de interação (os *cogs* e eventos do Discord) da lógica de domínio. Os comandos do bot apenas consumiriam serviços isolados, permitindo testar a regra de negócio sem depender de conexão com o Discord.
+*(I would undoubtedly change much more, but these would be the architectural priorities).*
 
-3. **Testes automatizados e CI/CD:** Implementaria testes unitários e de integração rodando em uma esteira automatizada (GitHub Actions) antes de qualquer deploy, eliminando a necessidade de testar tudo no braço em produção.
+## The Final Command
 
-4. **Containers e observabilidade:** Trocaria o deploy manual por containers **Docker** com logs estruturados, facilitando o rastreamento de exceções sem precisar caçar prints perdidos no console.
-
-*(Com certeza eu mudaria muito mais coisa, mas essas seriam as alterações principais).*
-
-## O último comando
-
-Quando decidi encerrar o ciclo da Blank Mind em 2024, não quis deixar um servidor fantasma para trás. No último dia da comunidade, programei o bot para expulsar todos os membros do servidor de forma automatizada. O mesmo bot que construiu e manteve a operação de pé por mais de um ano também foi encarregado de destruir o servidor. Aqui restou a sombra do que um dia o projeto foi:
+When I decided to sunset the Blank Mind cycle in 2024, I didn't want to leave a ghost server behind. On the community's last day, I programmed the bot to automatically kick all members from the server. The same bot that built and sustained the operation for over a year was also tasked with tearing it down. What remains is a shadow of what the project once was:
 https://discord.com/invite/2CNsRp8qmu
 
-
-## Tecnologias utilizadas na época
+## Technologies Used at the Time
 * **Python**
-* **Disnake** (wrapper da API do Discord)
-* **MongoDB / PyMongo** (persistência principal de dados)
-* **JSON** (usado de forma imprudente como cache local em disco)
-* **Plotly & NumPy** (geração de gráficos de uso e estatísticas dos membros)
-* **Square Cloud** (hospedagem)
-
----
-
-*Mantido no ar como registro histórico de onde comecei e de como um ambiente de produção caótico ensina mais do que qualquer curso.*
+* **Disnake** (Discord API wrapper)
+* **MongoDB / PyMongo** (Primary data persistence)
+* **JSON** (Recklessly used as a local disk cache)
+* **Plotly & NumPy** (Generation of usage graphs and member statistics)
+* **Square Cloud** (Hosting)

@@ -9,7 +9,7 @@ from functions.page1 import getSv
 
 def modelist_prepare(umodelist, uid, cavemode=0):
   try:
-    components=[disnake.ui.Button(label='Focado', emoji='🎯', style=disnake.ButtonStyle.secondary, custom_id=f"configmode-focado-{uid}"), disnake.ui.Button(label='Pomodoro', emoji='🍅', style=disnake.ButtonStyle.secondary, custom_id=f"configmode-pomodoro-{uid}"), disnake.ui.Button(label='Ciclo', emoji='📀', style=disnake.ButtonStyle.secondary, custom_id=f"configmode-ciclodeestudos-{uid}")]
+    components=[disnake.ui.Button(label='Focused', emoji='🎯', style=disnake.ButtonStyle.secondary, custom_id=f"configmode-focado-{uid}"), disnake.ui.Button(label='Pomodoro', emoji='🍅', style=disnake.ButtonStyle.secondary, custom_id=f"configmode-pomodoro-{uid}"), disnake.ui.Button(label='Cycle', emoji='📀', style=disnake.ButtonStyle.secondary, custom_id=f"configmode-ciclodeestudos-{uid}")]
 
     for pos, (key, val) in enumerate(umodelist.items()):
       if val == 100: 
@@ -28,7 +28,7 @@ def modelist_prepare(umodelist, uid, cavemode=0):
         
   except: pass
 
-  components.append(disnake.ui.Button(label='Caverna', emoji='🗻', style=disnake.ButtonStyle.primary, custom_id=f"configmode-caverna-{uid}"))
+  components.append(disnake.ui.Button(label='Cave', emoji='🗻', style=disnake.ButtonStyle.primary, custom_id=f"configmode-caverna-{uid}"))
   return components
 
 async def buttonClick(inter, client):
@@ -40,10 +40,10 @@ async def buttonClick(inter, client):
 	if 'configmode' in btn:
 		mode, truid = btn.split('-')[1:]
 		modepos = {"focado": 0, "pomodoro": 1, "ciclodeestudos": 2, "caverna": 3}
-		fchooses= {'focado': '🎯 A maioria dos chats desaparecerão assim que você entrar em alguma call', 'pomodoro': '🍅 Alterne entre períodos de descanso e estudo\n> Use o comando </pomodoro set:1225204130730217544> para personalizar','ciclodeestudos': '📀 Funciona como um pomodoro, mas é mais completo. Você pode nomear cada parte do ciclo, aumentando o nível de organização\n> Use o comando </cycle set:1225204130730217542> para personalizar', 'caverna': '⛰️ O modo de foco absoluto, perfeito para lobos solitários. Isola você de todos os chats e de todas as distrações por um tempo determinado **(Não é possível cancelar esse modo enquanto ele já estiver ativo!)**\n# Uma vez escolhido, terá que esperar o tempo acabar'}
+		fchooses= {'focado': '🎯 Most chats will disappear as soon as you join a call', 'pomodoro': '🍅 Alternate between rest and study periods\n> Use the command </pomodoro set:1225204130730217544> to customize','ciclodeestudos': '📀 Works like a pomodoro, but is more complete. You can name each part of the cycle, increasing the level of organization\n> Use the command </cycle set:1225204130730217542> to customize', 'caverna': '⛰️ The absolute focus mode, perfect for lone wolves. Isolates you from all chats and all distractions for a set time **(It is not possible to cancel this mode while it is already active!)**\n# Once chosen, you will have to wait for the time to end'}
 
-		if truid != str(user.id): return await inter.response.send_message('Não foi você que usou esse comando!', ephemeral=True)
-		elif user.voice: return await inter.response.send_message('Saia da sua call para alterar os modos.', ephemeral=True)
+		if truid != str(user.id): return await inter.response.send_message('You were not the one who used this command!', ephemeral=True)
+		elif user.voice: return await inter.response.send_message('Leave your call to change modes.', ephemeral=True)
 
 		style = inter.component.style
 
@@ -61,9 +61,9 @@ async def buttonClick(inter, client):
 			if first_choose: 
 				if not mode == 'caverna': await inter.response.send_message(first_choose, ephemeral=True)
 				else:
-					roles = ['3 dias', '6 dias', '9 dias', '12 dias', '15 dias']
+					roles = ['3 days', '6 days', '9 days', '12 days', '15 days']
 					cave_dropdown = disnake.ui.Select(
-        				placeholder='Escolha o tempo que ficará na caverna',
+        				placeholder='Choose the time you will stay in the cave',
         				options=[disnake.SelectOption(label=role, value=role) for role in roles],
        					custom_id='cavemode_select',
         				min_values=1,
@@ -85,7 +85,7 @@ async def buttonClick(inter, client):
 				if udata['cavemode'] > 0: cavemode = 2
 			except: pass
 
-			try: # Caso esteja no modo caverna(new_components fica menor)
+			try: # In case you are in cave mode(new_components gets smaller)
 				if new_components[2].style == disnake.ButtonStyle.success and mode == 'pomodoro' and change_state == disnake.ButtonStyle.success: 
 					new_components[2].style = disnake.ButtonStyle.secondary
 					udb.update_one({'uid': user.id}, {'$set': {f'modelist.ciclodeestudos': 0}})
@@ -98,11 +98,11 @@ async def buttonClick(inter, client):
 			except: pass
 		
 			if cavemode: 
-				if cavemode == 2: # Já está no modo caverna
+				if cavemode == 2: # Already in cave mode
 					new_components.pop(0)
 					new_components.pop(2)
 	
-				elif cavemode: # Quer entrar no modo caverna
+				elif cavemode: # Want to enter cave mode
 					new_components[3].style = disnake.ButtonStyle.primary
 					
 				
@@ -116,11 +116,11 @@ async def buttonClick(inter, client):
 		except: print(error())
 	
 	elif btn == 'leave_focus':
-		if user.voice: return await inter.response.send_message('Saia da sua call antes de clicar no botão..', ephemeral=True)
-		print(f'{user.nick} Saiu do foco manualmente.')
+		if user.voice: return await inter.response.send_message('Leave your call before clicking the button..', ephemeral=True)
+		print(f'{user.nick} Manually exited focus.')
 		try: 
 			await user.remove_roles(getSv('rFocus'))
-			return await inter.response.send_message('Modo focado desativado.', ephemeral=True)
+			return await inter.response.send_message('Focused mode disabled.', ephemeral=True)
 		except: pass
 			
     

@@ -36,7 +36,7 @@ botnick_change = []
 async def namedisplay(user):
   global guild
 
-  field_stat = {0: 'Nenhum', 1: 'CUSTOMIZADO', 2: 'blanks', 3: 'calls.totaltime', 4: 'bumps'}
+  field_stat = {0: 'None', 1: 'CUSTOM', 2: 'blanks', 3: 'calls.totaltime', 4: 'bumps'}
 
   if not isinstance(user, disnake.Member):
     user = await guild.fetch_member(int(user))
@@ -57,7 +57,7 @@ async def namedisplay(user):
 
   elif ustat != 100:
     if type(ustat) != str: value = readSet(user.id, field_stat[ustat], 0)
-    else: # Se for um status customizado
+    else: # If it's a custom status
       botnick_change.append(user)
       uprevious = ' '.join(user.display_name[:32 - 3 - len(ustat)].split('═')[0].split())
       return await user.edit(nick=uprevious + ' ═ ' + ustat)
@@ -99,12 +99,12 @@ async def namedisplay(user):
         except: 
           value = readSet(user.id, 'calls.totaltime', 0)
           value = int(value) // 60
-          print(f'Namedisplay -> Erro no valor de {user.id} (ustat 2)')
+          print(f'Namedisplay -> Error in value of {user.id} (ustat 2)')
 
       bstring = f' ═ {int(value)}'
 
     if cavemode: 
-      bstring += ' dia'
+      bstring += ' day'
       if cavemode> 1: bstring += 's'
 
     elif ustat == 2: bstring += ' 𝔅'
@@ -133,21 +133,21 @@ def newBlank(vals, mode="+"):
       emoji = '<:blankbag:1124445117261037630>'
   
   if mode == "-":
-    return f'<:no:1132703732543529000> **Perdeu {reward}** {emoji}' #|  Total: __{round(total - reward, 1)}__** <:blank:1124439750208655500>'
+    return f'<:no:1132703732543529000> **Lost {reward}** {emoji}' #|  Total: __{round(total - reward, 1)}__** <:blank:1124439750208655500>'
   elif mode == 'g':
-    return f':credit_card: **Gastou {reward}** {emoji}' #|  Total: __{round(total - reward, 1)}__** <:blank:1124439750208655500>'
+    return f':credit_card: **Spent {reward}** {emoji}' #|  Total: __{round(total - reward, 1)}__** <:blank:1124439750208655500>'
   else:
-    return f'<:yes:1132703714256359584> **Ganhou {reward}** {emoji}'# | #Total: __{round(total + reward, 1)}__** <:blank:1124439750208655500>'
+    return f'<:yes:1132703714256359584> **Earned {reward}** {emoji}'# | #Total: __{round(total + reward, 1)}__** <:blank:1124439750208655500>'
 
 
 
 async def specChannel(inter, cid=[1107757022503510147, 1207833725786787860, 1100117223600816219]):
   if inter.channel.id not in cid:   
     if type(cid) == list:
-      await inter.response.send_message(f"**Utilize esse comando só no canal <#{1107757022503510147}>**!", ephemeral=True)
+      await inter.response.send_message(f"**Use this command only in the channel <#{1107757022503510147}>**!", ephemeral=True)
 		
     else:
-      await inter.response.send_message(f"**Utilize esse comando só no canal <#{cid}>**!", ephemeral=True)
+      await inter.response.send_message(f"**Use this command only in the channel <#{cid}>**!", ephemeral=True)
 	  
     return True
 

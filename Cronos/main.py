@@ -23,9 +23,9 @@ def readComs(mode='errors'):
 			module_path = f'{folder}.{module_name}'
 			
 			try:
-				comando_module = __import__(module_path, fromlist=[''])
-				if hasattr(comando_module, 'command'):
-					comando_module.command(bot)
+				command_module = __import__(module_path, fromlist=[''])
+				if hasattr(command_module, 'command'):
+					command_module.command(bot)
 			except:
 				pass
 				if mode == 'errors':
@@ -47,7 +47,7 @@ async def on_ready():
     await bot.user.edit(avatar=avatar.read()) 
   """
 
-  print('Atualizado!!')
+  print('Updated!!')
   readComs('no error')
   
   getSv(bot)
@@ -58,12 +58,12 @@ async def on_ready():
 
   await callUpdate(cCalls, bot)
 
-  await bot.change_presence(activity=disnake.Activity(type=disnake.ActivityType.custom, name="Blank Mind", state="⌛ Bot temporizador"))
+  await bot.change_presence(activity=disnake.Activity(type=disnake.ActivityType.custom, name="Blank Mind", state="⌛ Timer Bot"))
 
   unfocus = bot.get_channel(1227267622911869029)
 
   embed = disnake.Embed(
-    description='🎯** Bugou no modo focado?** Clique no botão para sair do modo focado manualmente',
+    description='🎯** Bugged in focus mode?** Click the button to manually exit focus mode',
     colour=0xFF000D
   )
 
@@ -80,32 +80,32 @@ readComs()
 async def on_message(msg):
   if msg.author.bot and '<-C->' in msg.content: 
     emb1 = disnake.Embed(
-      description=f'# :loud_sound: COMANDOS GERAIS',
+      description=f'# :loud_sound: GENERAL COMMANDS',
       colour = 0xFFFFFF
     )
     emb2 = disnake.Embed(
-      description=f'## ✅ </room:1225204130730217545>\n> **Só funciona se você tiver entrado numa call privada. Para criar uma call privada, é só se conectar a <#1126180695019102208>**. Após isso, você entrará numa sala que só você tem acesso. Você pode usar esse comando para convidar novas pessoas para sua sala, assim elas também podem entrar.\n\n> A cada pessoa na sala, **a recompensa de <:blank:1124439750208655500> por minuto aumenta em 0.01**. Se qualquer pessoa sair da sala, ela é destruída na hora! é um estudo comprometido',
+      description=f'## ✅ </room:1225204130730217545>\n> **Only works if you have entered a private call. To create a private call, just connect to <#1126180695019102208>**. After that, you will enter a room that only you have access to. You can use this command to invite new people to your room, so they can also enter.\n\n> For each person in the room, **the <:blank:1124439750208655500> reward per minute increases by 0.01**. If anyone leaves the room, it is destroyed immediately! It\'s a committed study',
       colour = 0x33FF33
     )
     emb3 = disnake.Embed(
-      description=f'## ✅ </modelist:1225212116202684508>\n> Abre seu painel de modos; **Modos são modificadores que podem melhorar sua organização e direcionamento nos estudos:** os modos que você escolher ativarão sempre que você entrar em uma call. Existem 4 tipos disponíveis:\n\n- :dart: **Focado:** faz a maioria dos chats sumirem temporariamente\n\n- :tomato: **Pomodoro:** Ativa um contador de tempo de descanso e estudo escolhido por você. **O seu tempo em call também considerará o tempo que você descansou**\n\n- :dvd: **Ciclo de estudos:** Uma versão evoluída do pomodoro: você pode nomear cada etapa de seu ciclo, assim como especificar ciclos para cada dia da semana. **Não pode ser ativado junto com o modo pomodoro.**\n\n- :mountain_snow: **Caverna:** Um modo de foco absoluto que te isola da maioria dos chats (distratores) pela quantidade de dias que você escolher. **Diferente dos outros modos, ele permanece sempre ativado e não pode ser cancelado, mesmo se você não estiver em uma call.**',
+      description=f'## ✅ </modelist:1225212116202684508>\n> Opens your modes panel; **Modes are modifiers that can improve your organization and direction in studies:** the modes you choose will activate whenever you enter a call. There are 4 types available:\n\n- :dart: **Focused:** makes most chats temporarily disappear\n\n- :tomato: **Pomodoro:** Activates a rest and study timer chosen by you. **Your time in call will also consider the time you rested**\n\n- :dvd: **Study cycle:** An evolved version of the pomodoro: you can name each step of your cycle, as well as specify cycles for each day of the week. **Cannot be activated along with pomodoro mode.**\n\n- :mountain_snow: **Cave:** An absolute focus mode that isolates you from most chats (distractors) for the amount of days you choose. **Unlike other modes, it is always on and cannot be canceled, even if you are not in a call.**',
       colour = 0x33FF33
     )
 	  
     emb4 = disnake.Embed(
-      description=f'# :recycle: COMANDOS DE CICLO',
+      description=f'# :recycle: CYCLE COMMANDS',
       colour = 0xFFFFFF
     )
     emb5 = disnake.Embed(
-      description=f'## ✅ </pomodoro set:1225204130730217544>\n> **Ajusta o tempo do seu pomodoro**. É ativado através do comando </modelist:1225212116202684508>',
+      description=f'## ✅ </pomodoro set:1225204130730217544>\n> **Adjusts your pomodoro time**. It is activated through the </modelist:1225212116202684508> command',
       colour = 0x33FF33
     )
     emb6 = disnake.Embed(
-      description=f'## ✅ </cycle set:1225490700557090857>\n> **Cria um ciclo de estudo customizado**. É ativado através do comando </modelist:1225212116202684508>\n\n> Especifique os ciclos de cada dia da semana e o tempo que será dedicado para cada matéria de cada ciclo. Sempre que você termina uma matéria, o ciclo salvará seu progresso mesmo que você saia da call.',
+      description=f'## ✅ </cycle set:1225490700557090857>\n> **Creates a custom study cycle**. It is activated through the </modelist:1225212116202684508> command\n\n> Specify the cycles for each day of the week and the time that will be dedicated to each subject of each cycle. Whenever you finish a subject, the cycle will save your progress even if you leave the call.',
       colour = 0x33FF33
     )
     emb7 = disnake.Embed(
-      description=f'## ✅ </cycle today:1225490700557090857>\n> Informa as matérias do ciclo de hoje e quais delas você já estudou.',
+      description=f'## ✅ </cycle today:1225490700557090857>\n> Shows the subjects of today\'s cycle and which ones you have already studied.',
       colour = 0x33FF33
     )
 
@@ -114,11 +114,11 @@ async def on_message(msg):
 
 
     embm1 = disnake.Embed(
-      description=f'# :new: :loud_sound: COMANDOS GERAIS',
+      description=f'# :new: :loud_sound: GENERAL COMMANDS',
       colour = 0xFFFFFF
     )
     embm2 = disnake.Embed(
-      description=f'## :new: </room:1225204130730217545>\n> **Só funciona se você tiver entrado numa call privada. Para criar uma call privada, é só se conectar a <#1126180695019102208>**. Após isso, você entrará numa sala que só você tem acesso. Você pode usar esse comando para convidar novas pessoas para sua sala, assim elas também podem entrar.\n\n> A cada pessoa na sala, **a recompensa de <:blank:1124439750208655500> por minuto aumenta em 0.01**. Se qualquer pessoa sair da sala, ela é destruída na hora! é um estudo comprometido',
+      description=f'## :new: </room:1225204130730217545>\n> **Only works if you have entered a private call. To create a private call, just connect to <#1126180695019102208>**. After that, you will enter a room that only you have access to. You can use this command to invite new people to your room, so they can also enter.\n\n> For each person in the room, **the <:blank:1124439750208655500> reward per minute increases by 0.01**. If anyone leaves the room, it is destroyed immediately! It\'s a committed study',
       colour = 0x8982C8
     )
     embm3 = disnake.Embed(
@@ -127,7 +127,7 @@ async def on_message(msg):
     )
 	  
     embm4 = disnake.Embed(
-      description=f'# <:MP_LOCK:1230985696353714237> :recycle: COMANDOS DE CICLO\n> Desbloqueie com o <@&1230869225640562698>',
+      description=f'# <:MP_LOCK:1230985696353714237> :recycle: CYCLE COMMANDS\n> Unlock with <@&1230869225640562698>',
       colour = 0xed3325
     )
 
@@ -136,12 +136,12 @@ async def on_message(msg):
 
 
     embl1 = disnake.Embed(
-      description=f'# <:MP_LOCK:1230985696353714237> :loud_sound: COMANDOS GERAIS\n> Desbloqueia com um <@&1230869038402375751>',
+      description=f'# <:MP_LOCK:1230985696353714237> :loud_sound: GENERAL COMMANDS\n> Unlock with <@&1230869038402375751>',
       colour = 0xed3325
     )
 	  
     embl4 = disnake.Embed(
-      description=f'# <:MP_LOCK:1230985696353714237> :recycle: COMANDOS DE CICLO\n> Desbloqueie com o <@&1230869225640562698>',
+      description=f'# <:MP_LOCK:1230985696353714237> :recycle: CYCLE COMMANDS\n> Unlock with <@&1230869225640562698>',
       colour = 0xed3325
     )
 
@@ -203,17 +203,17 @@ async def on_voice_state_update(member, before, after):
       modes = await mode_format(member, str(cCamera.id), uid, 'ignore')
       mode_texts = modes[0]
 
-      if not mode_texts: centralize = 'ㅤ\n' # Sem ciclos de estudo
+      if not mode_texts: centralize = 'ㅤ\n' # No study cycles
       else: centralize = ''
 
       if after.self_stream == True:
         embed = disnake.Embed(
-          description=f'{centralize}{member.mention} está compartilhando tela em <#{1136470255473000480}>\n**<t:{int((datetime.now()).timestamp())}:R>**{mode_texts}',
+          description=f'{centralize}{member.mention} is sharing screen in <#{1136470255473000480}>\n**<t:{int((datetime.now()).timestamp())}:R>**{mode_texts}',
           colour=0xffffff,
         )
       else:
         embed = disnake.Embed(
-          description=f'{centralize}{member.mention} ativou a câmera em <#{1136470255473000480}>\n**<t:{int((datetime.now()).timestamp())}:R>**{mode_texts}',
+          description=f'{centralize}{member.mention} turned on the camera in <#{1136470255473000480}>\n**<t:{int((datetime.now()).timestamp())}:R>**{mode_texts}',
           colour=0xffffff,
         )
 
@@ -234,15 +234,15 @@ async def on_voice_state_update(member, before, after):
       try: await msg.edit(embed=embed)
       except: pass
 
-    elif uid in calls or uid in callspomo: # Se já tiver ativado a câmera, mas agora desativou
+    elif uid in calls or uid in callspomo: # If already activated camera, but now disabled
       if after.self_stream == False and after.self_video == False:
         await member.move_to(None)
   
-  elif before.channel == cCamera and uid in camera_states: # Saiu do canal de camera antes de ativar a camera
+  elif before.channel == cCamera and uid in camera_states: # Left camera channel before activating camera
      await disableCameradetect(uid)
 
   if category != cFreearea_category and before.self_stream == after.self_stream and before.self_mute == after.self_mute and before.self_video == after.self_video and before.self_deaf == after.self_deaf:
-    if after == cCamera and (after.self_stream == True or after.self_video == True): pass # Se ainda estiver gravando / stream na sala de câmera, sem ter saído:
+    if after == cCamera and (after.self_stream == True or after.self_video == True): pass # If still recording/streaming in the camera room, without leaving:
     else: await state(member, before, after, [cCalls, cRoom, cGroup_category], bot)
   elif after.channel and after.channel.id == 1162148851545809078: await member.add_roles(rCinema)
   elif before.channel and before.channel.id == 1162148851545809078: await member.remove_roles(rCinema)

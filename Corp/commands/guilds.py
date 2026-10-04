@@ -12,13 +12,13 @@ global simbol_opts, simbols, color_opts, reason_opts, reasons
 simbol_opts = {"👥": 0, "📚": 1, "🧐": 2, "🔥": 3, "💣": 4, "🎩": 5}
 simbols = ["👥", "📚", "🧐", "🔥", "💣", "🎩"]
 
-reason_opts = {"Inatividade": 0, "Mal desempenho": 1, "Quebrando salas": 2, "Trollando": 3}
-reasons = ["Inatividade", "Mal desempenho", "Quebrando salas", "Trollando"]
+reason_opts = {"Inactivity": 0, "Poor performance": 1, "Breaking rooms": 2, "Trolling": 3}
+reasons = ["Inactivity", "Poor performance", "Breaking rooms", "Trolling"]
 
-color_opts = {"Azul": 0x008bFF, "Verde": 0x10FF00, "Vermelho": 0xFF2626, "Amarelo":  0xF4FF00, "Branco": 0xFFFFFF}
+color_opts = {"Blue": 0x008bFF, "Green": 0x10FF00, "Red": 0xFF2626, "Yellow":  0xF4FF00, "White": 0xFFFFFF}
 
 global upgrades, upcosts
-upgrades = ['', '# ⏫ Upgrade para **Nível 2**?\n> A guilda <@&REPGUILD> desbloqueará as seguintes melhorias:\n- :speech_balloon: **Chat de guilda**\n- <:guild_member:1217871413617229914> **+1 Vaga**\n\n:credit_card: **O upgrade custará 50.0 <:blank:1124439750208655500> do cofre da guilda**']
+upgrades = ['', '# ⏫ Upgrade to **Level 2**?\n> The guild <@&REPGUILD> will unlock the following improvements:\n- :speech_balloon: **Guild chat**\n- <:guild_member:1217871413617229914> **+1 Slot**\n\n:credit_card: **The upgrade will cost 50.0 <:blank:1124439750208655500> from the guild vault**']
 upcosts = [0, 50, -1]
 
 def command(client):
@@ -31,37 +31,37 @@ def command(client):
   @sguild.sub_command(name="create")
   async def sbcreate(
     inter = disnake.ApplicationCommandInteraction,
-    nome = com.Param(max_length=35),
-    cor = com.Param(max_length=10),
-    símbolo: com.option_enum(simbol_opts) = 0
+    name = com.Param(max_length=35),
+    color = com.Param(max_length=10),
+    symbol: com.option_enum(simbol_opts) = 0
   ): 
     """
-    Custa 100 𝔅 ➔ 👥 Crie sua própria guilda: Um super grupo de estudo em conjunto!
+    Costs 100 𝔅 ➔ 👥 Create your own guild: A super joint study group!
     Parameters
     ----------
-    nome: O nome da sua guilda
-    cor: Escolha entre: Azul, Verde, Vermelho, Amarelo, Branco
-    símbolo: O emoji que representa sua guilda
+    name: The name of your guild
+    color: Choose between: Blue, Green, Red, Yellow, White
+    symbol: The emoji that represents your guild
     """
 	  
     guild = inter.guild
     uid = inter.author.id
     suid = str(uid)
 
-    símbolo = simbols[símbolo]
+    symbol = simbols[symbol]
 
     try:
-      cor = color_opts[cor.capitalize()]
+      color = color_opts[color.capitalize()]
     except:
-      return await inter.response.send_message(f'"{cor}" não é uma cor válida dentre as disponíveis **(Azul, Verde, Vermelho, Amarelo, Branco)**', ephemeral=True)
+      return await inter.response.send_message(f'"{color}" is not a valid color among the available ones **(Blue, Green, Red, Yellow, White)**', ephemeral=True)
 
     udata = udb.find_one({'uid': uid, 'blanks': {'$gte': 100}})
 
     if not udata: 
-      return await inter.response.send_message('Você não tem blanks o suficiente. Vaza, POBRE', ephemeral=True)
+      return await inter.response.send_message('You don\'t have enough blanks. Get out, POOR', ephemeral=True)
 
-    elif not bool(re.match(r'^[a-zA-ZÀ-ÖØ-öø-ÿ\s]+$', nome)):
-      return await inter.response.send_message(f'**Nome de guilda inválido**\n> Inclua apenas letras; nada de números e caracteres especiais.', ephemeral=True)
+    elif not bool(re.match(r'^[a-zA-ZÀ-ÖØ-öø-ÿ\s]+$', name)):
+      return await inter.response.send_message(f'**Invalid guild name**\n> Include only letters; no numbers or special characters.', ephemeral=True)
 
     uguild = None
     try:
@@ -69,14 +69,14 @@ def command(client):
     except: pass
 
     if uguild:
-      return await inter.response.send_message(f'Você já participa da guilda "**{uguild["guild_name"]}**"', ephemeral=True)
+      return await inter.response.send_message(f'You are already in the guild "**{uguild["guild_name"]}**"', ephemeral=True)
 
-    role = await guild.create_role(name=f'{símbolo} ' + nome + ' (Nv1)', color=disnake.Color(cor))
+    role = await guild.create_role(name=f'{symbol} ' + name + ' (Lv1)', color=disnake.Color(color))
     await inter.author.add_roles(role)
     
     udb.insert_one({
       'ugid': uid,
-      'guild_name': nome.capitalize(), 
+      'guild_name': name.capitalize(), 
       'guild_members': [
         uid
       ],
@@ -98,8 +98,8 @@ def command(client):
 
 
     embed = disnake.Embed(
-      description=f'# A guilda __{nome}__ foi fundada com sucesso.\n> Você recebeu o cargo <@&{role.id}>. Marque esse cargo sempre que quiser chamar os membros da guilda. **Sua sala privada estará sempre aberta para eles.**\n▬▬▬▬▬▬▬▬▬▬▬▬\n{newBlank([udata["blanks"] - 100, 100], "g")}',
-      colour=disnake.Color(cor)
+      description=f'# The guild __{name}__ was successfully founded.\n> You received the role <@&{role.id}>. Mention this role whenever you want to call guild members. **Your private room will always be open for them.**\n▬▬▬▬▬▬▬▬▬▬▬▬\n{newBlank([udata["blanks"] - 100, 100], "g")}',
+      colour=disnake.Color(color)
     )
 
     return await inter.response.send_message(embed=embed)
@@ -107,55 +107,55 @@ def command(client):
   @sguild.sub_command(name="invite")
   async def sbinvite(
     inter = disnake.ApplicationCommandInteraction,
-    usuário = com.Param(max_length=100)
+    user = com.Param(max_length=100)
   ): 
     """
-    👑 Para líderes (Custa 5 𝔅) ➔ ➕ Convide um usuário para sua guilda
+    👑 For leaders (Costs 5 𝔅) ➔ ➕ Invite a user to your guild
     Parameters
     ----------
-    usuário: EX: @fulano
+    user: EX: @user
     """
 
     try:
       udata = udb.find_one({'uid': inter.author.id})
       have_guild = udata['guild']
     except:
-      return await inter.response.send_message('Você nem tem guilda...', ephemeral=True)
+      return await inter.response.send_message('You don\'t even have a guild...', ephemeral=True)
     
     uguild = udb.find_one({'ugid': inter.author.id})
     mlimit = 10 + (uguild["level"] - 1)
 
     if udata['blanks'] < 5:
-      return await inter.response.send_message('Você não tem blanks o suficiente. Vaza, POBRE', ephemeral=True)
+      return await inter.response.send_message('You don\'t have enough blanks. Get out, POOR', ephemeral=True)
 	  
     elif not uguild: 
-      return await inter.response.send_message('**Apenas o dono da sua guilda pode criar convites**', ephemeral=True)
+      return await inter.response.send_message('**Only the guild owner can create invites**', ephemeral=True)
 
     elif len(uguild['guild_members']) >= mlimit:
-      return await inter.response.send_message(f'**Sua guilda está cheia. O limite atual é de {mlimit} membros**\n- Aumente o nível da guilda com </guild upgrade:1233220536780324864> para aumentar o limite', ephemeral=True)
+      return await inter.response.send_message(f'**Your guild is full. The current limit is {mlimit} members**\n- Upgrade the guild level with </guild upgrade:1233220536780324864> to increase the limit', ephemeral=True)
 	  
-    elif usuário.count('<@') > 1:
-      return await inter.response.send_message('**Você só pode convidar um usuário por vez**', ephemeral=True)
+    elif user.count('<@') > 1:
+      return await inter.response.send_message('**You can only invite one user at a time**', ephemeral=True)
 
-    cuid = int(usuário.replace(">", "").replace("<", "").replace("@", ""))
+    cuid = int(user.replace(">", "").replace("<", "").replace("@", ""))
 
     if inter.author.id == cuid:
-      return await inter.response.send_message('Você não pode se autoconvidar né, gênio.', ephemeral=True)
+      return await inter.response.send_message('You can\'t invite yourself, genius.', ephemeral=True)
 
     guild = inter.guild
 
     valid_cuid = guild.get_member(cuid)
     
     if not valid_cuid:
-      return await inter.response.send_message('**Convide um usuário válido!**', ephemeral=True)
+      return await inter.response.send_message('**Invite a valid user!**', ephemeral=True)
 
     try:
       has_guild = udb.find_one({'uid': cuid})['guild']
-      return await inter.response.send_message(f'Esse usuário já faz parte de uma guilda', ephemeral=True)
+      return await inter.response.send_message(f'This user is already part of a guild', ephemeral=True)
     except: pass
 
     embed = disnake.Embed(
-      description=f"{inter.author.mention} o convidou para entrar na guilda **{uguild['guild_name']}**\n▬▬▬▬▬▬▬▬▬▬▬▬\n{newBlank([udata['blanks'] - 5, 5], 'g')}",
+      description=f"{inter.author.mention} invited you to join the guild **{uguild['guild_name']}**\n▬▬▬▬▬▬▬▬▬▬▬▬\n{newBlank([udata['blanks'] - 5, 5], 'g')}",
       colour=0x000080
     )
 
@@ -164,39 +164,39 @@ def command(client):
     try: await namedisplay(inter.author)
     except: pass
     
-    await inter.response.send_message(f'<@{cuid}>', embed=embed, components=[disnake.ui.Button(label='👥 Entrar na guilda', style=disnake.ButtonStyle.primary, custom_id=f"enterguild.{cuid}.by.{inter.author.id}")])
+    await inter.response.send_message(f'<@{cuid}>', embed=embed, components=[disnake.ui.Button(label='👥 Join guild', style=disnake.ButtonStyle.primary, custom_id=f"enterguild.{cuid}.by.{inter.author.id}")])
 
   @sguild.sub_command(name="kick")
   async def sbkick(
     inter = disnake.ApplicationCommandInteraction,
-    usuário = com.Param(max_length=100),
-    motivo: com.option_enum(reason_opts) = None
+    user = com.Param(max_length=100),
+    reason: com.option_enum(reason_opts) = None
   ): 
     """
-    👑 Para líderes ➔ ❌ Expulse um usuário de sua guilda
+    👑 For leaders ➔ ❌ Kick a user from your guild
     Parameters
     ----------
-    usuário: EX: @fulano
-    motivo: Escolha uma justificativa
+    user: EX: @user
+    reason: Choose a justification
     """
     try:
       udata = udb.find_one({'uid': inter.author.id})
       have_guild = udata['guild']
     except:
-      return await inter.response.send_message('Você nem tem guilda...', ephemeral=True)
+      return await inter.response.send_message('You don\'t even have a guild...', ephemeral=True)
     
     uguild = udb.find_one({'ugid': inter.author.id})
 
     if not uguild: 
-      return await inter.response.send_message('**Apenas o dono da sua guilda pode expulsar membros**', ephemeral=True)
+      return await inter.response.send_message('**Only the guild owner can kick members**', ephemeral=True)
 	  
-    elif usuário.count('<@') > 1:
-      return await inter.response.send_message('**Você só pode convidar um usuário por vez**', ephemeral=True)
+    elif user.count('<@') > 1:
+      return await inter.response.send_message('**You can only invite one user at a time**', ephemeral=True)
 
-    cuid = int(usuário.replace(">", "").replace("<", "").replace("@", ""))
+    cuid = int(user.replace(">", "").replace("<", "").replace("@", ""))
 
     if inter.author.id == cuid:
-      return await inter.response.send_message('Você não pode se autokickar né, gênio.', ephemeral=True)
+      return await inter.response.send_message('You can\'t kick yourself, genius.', ephemeral=True)
 
     guild = inter.guild
 
@@ -204,16 +204,16 @@ def command(client):
     inyour_guild = uguild['guild_members']
     
     if not valid_cuid:
-      return await inter.response.send_message('**Convide um usuário válido!**', ephemeral=True)
+      return await inter.response.send_message('**Invite a valid user!**', ephemeral=True)
     elif cuid not in uguild['guild_members']:
-      return await inter.response.send_message('**Esse usuário não está na sua guilda.**', ephemeral=True)
+      return await inter.response.send_message('**This user is not in your guild.**', ephemeral=True)
 
     embed = disnake.Embed(
-      description=f"<a:heartbreak:1219782670062452736> Você foi expulso da guilda **{uguild['guild_name']}**",
+      description=f"<a:heartbreak:1219782670062452736> You were kicked from the guild **{uguild['guild_name']}**",
       colour=0xed3325
     )
 
-    try: embed.description += f'\n▬▬▬▬▬▬▬▬▬▬▬▬\n## Motivo:\n> {reasons[motivo]}'
+    try: embed.description += f'\n▬▬▬▬▬▬▬▬▬▬▬▬\n## Reason:\n> {reasons[reason]}'
     except: pass
 
     udb.update_one({'ugid': inter.author.id}, {'$pull': {'guild_members': cuid}, '$unset': {f'bank.contributors.{cuid}': 1}})
@@ -228,24 +228,24 @@ def command(client):
   @sguild.sub_command(name="leave")
   async def sbleave(
     inter = disnake.ApplicationCommandInteraction,
-    confirmar = com.Param(max_length=3)
+    confirm = com.Param(max_length=3)
   ): 
     """
-    Saia de sua guilda
+    Leave your guild
     Parameters
     ----------
-    confirmar: Digite "sim" para confirmar.
+    confirm: Type "yes" to confirm.
     """
-    if 1126331167084388372 != inter.channel.id:  await inter.response.send_message(f"**Utilize esse comando só no canal <#{1126331167084388372}>**!", ephemeral=True)
+    if 1126331167084388372 != inter.channel.id:  return await inter.response.send_message(f"**Use this command only in the channel <#{1126331167084388372}>**!", ephemeral=True)
 	  
-    if confirmar.lower() != 'sim': return await inter.response.send_message('Confirmação inválida. Você deve digitar "**sim**" para prosseguir com a ação', ephemeral=True)
+    if confirm.lower() != 'yes': return await inter.response.send_message('Invalid confirmation. You must type "**yes**" to proceed with the action', ephemeral=True)
 	  
     try:
       udata = udb.find_one({'uid': inter.author.id})
       have_guild = udata['guild']
       uguild = udb.find_one({'ugid': udata['guild']})
     except:
-      return await inter.response.send_message('Você nem tem guilda...', ephemeral=True)
+      return await inter.response.send_message('You don\'t even have a guild...', ephemeral=True)
 
     svguild = getSv('guild')
     guild_role = svguild.get_role(uguild['guild_role'])
@@ -256,14 +256,14 @@ def command(client):
         await guild_role.delete()
 
         udb.delete_one({'ugid': udata['guild']})
-        new_leader = f"\n> O último membro saiu. A guilda foi desfeita."
+        new_leader = f"\n> The last member left. The guild has been disbanded."
 
       else:
         set_owner = uguild['guild_members'][1]
         udb.update_one({'ugid': udata['guild']}, {'$set': {'ugid': set_owner, 'guild_owner': set_owner}, '$pull': {'guild_members': inter.author.id}, '$unset': {f'bank.contributors.{inter.author.id}': 1}})
         udb.update_many({'guild': inter.author.id}, {'$set': {'guild': set_owner}})
 		  
-        new_leader = f"\n> A posse da guilda irá para o membro mais antigo. O novo líder da guilda agora é <@{set_owner}>"		  
+        new_leader = f"\n> The guild ownership will go to the oldest member. The new guild leader is now <@{set_owner}>"		  
 
       icon_display = '# <:guild_owner:1217871403538321428>'
 
@@ -273,7 +273,7 @@ def command(client):
       icon_display, new_leader = '<:guild_member:1217871413617229914>', ''
 
     embed = disnake.Embed(
-      description=f"{icon_display} {inter.author.mention} saiu da guilda **{uguild['guild_name']}**{new_leader}",
+      description=f"{icon_display} {inter.author.mention} left the guild **{uguild['guild_name']}**{new_leader}",
       colour=0xed3325
     )
 	  
@@ -289,13 +289,13 @@ def command(client):
     inter = disnake.ApplicationCommandInteraction,
   ): 
     """
-    👀 Veja as estatísticas de sua guilda
+    👀 View your guild's statistics
     """
     try:
       udata = udb.find_one({'uid': inter.author.id})
       has_guild = udata['guild']
     except:
-      return await inter.response.send_message('Você nem tem guilda...', ephemeral=True)
+      return await inter.response.send_message('You don\'t even have a guild...', ephemeral=True)
 
     guild = udb.find_one({'ugid': has_guild})
 	  
@@ -310,7 +310,7 @@ def command(client):
 
 
     embed = disnake.Embed(
-      description=f'# <@&{guild["guild_role"]}>\n> **Fundada <t:{int((guild["was_born"] + timedelta(hours=3)).timestamp())}:R>**\n> **{len(guild["guild_members"])}/{10 + (guild["level"] - 1)} Membros**\n\n## <:guildvault:1233430694231932959> **Cofre:** {round(guild["bank"]["blanks"], 1)} <:blank:1124439750208655500>\n\n## Maiores contribuidores\n{contributors}',
+      description=f'# <@&{guild["guild_role"]}>\n> **Founded <t:{int((guild["was_born"] + timedelta(hours=3)).timestamp())}:R>**\n> **{len(guild["guild_members"])}/{10 + (guild["level"] - 1)} Members**\n\n## <:guildvault:1233430694231932959> **Vault:** {round(guild["bank"]["blanks"], 1)} <:blank:1124439750208655500>\n\n## Top contributors\n{contributors}',
       colour = grole.colour
     )
 
@@ -323,21 +323,21 @@ def command(client):
     inter = disnake.ApplicationCommandInteraction,
   ): 
     """
-    👑 Para líderes ➔ ⏫ Aumente o nível da sua guilda
+    👑 For leaders ➔ ⏫ Upgrade your guild's level
     """
     try:
       udata = udb.find_one({'uid': inter.author.id})
       have_guild = udata['guild']
     except:
-      return await inter.response.send_message('Você nem tem guilda...', ephemeral=True)
+      return await inter.response.send_message('You don\'t even have a guild...', ephemeral=True)
 	  
     
     uguild = udb.find_one({'ugid': inter.author.id})
 
     if not uguild: 
-      return await inter.response.send_message('**Apenas o dono da sua guilda pode fazê-la subir de nível**', ephemeral=True)
+      return await inter.response.send_message('**Only the owner of your guild can upgrade it**', ephemeral=True)
     elif uguild["level"] == 2:
-      return await inter.response.send_message('**Sua guilda está no nível máximo.**', ephemeral=True)
+      return await inter.response.send_message('**Your guild is at maximum level.**', ephemeral=True)
 
 
     embed = disnake.Embed(

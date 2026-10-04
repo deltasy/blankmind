@@ -17,9 +17,9 @@ def readComs(mode='no errors'):
       module_path = f'{folder}.{module_name}'
 
       try:
-        comando_module = __import__(module_path, fromlist=[''])
-        if hasattr(comando_module, 'command'):
-          comando_module.command(bot)
+        command_module = __import__(module_path, fromlist=[''])
+        if hasattr(command_module, 'command'):
+          command_module.command(bot)
       except:
         if mode == 'errors':
           print(f'Command imports -> {error()}\n-----')
@@ -30,7 +30,7 @@ bot = commands.Bot(command_prefix='>', intents=intents)
 
 @bot.event
 async def on_ready():
-  print('CORP iniciado!')
+  print('CORP started!')
   readComs()
 
   getSv(bot)
@@ -43,7 +43,7 @@ async def on_ready():
 
   #await initial(bot)
 
-  await bot.change_presence(activity=disnake.Activity(type=disnake.ActivityType.custom, name="Blank Mind", state="💠 Bot de guildas"))
+  await bot.change_presence(activity=disnake.Activity(type=disnake.ActivityType.custom, name="Blank Mind", state="💠 Guilds Bot"))
 
   #await manualrank()
 
@@ -54,7 +54,7 @@ readComs('errors')
 
 
 async def manualrank():
-  cHall = bot.get_channel(1233830022473711636) # RANK DE GUILDA DIARIO
+  cHall = bot.get_channel(1233830022473711636) # DAILY GUILD RANK
 		  
   svguild = cHall.guild
 	
@@ -80,7 +80,7 @@ async def manualrank():
 
   await cHall.purge(limit=None)
   await cHall.send(embed=gembed)
-  await cHall.send(f'# <a:animated_fire:1216782884036280390> **{best_guild["guild_name"]} está dominando o hall!**')
+  await cHall.send(f'# <a:animated_fire:1216782884036280390> **{best_guild["guild_name"]} is dominating the hall!**')
 
 
 def fhFilter(lvl):
@@ -106,28 +106,28 @@ def fhFilter(lvl):
 
 async def initial(bot):
     emb1 = disnake.Embed(
-      description=f'## 💠 COMANDOS DE GUILDA',
+      description=f'## 💠 GUILD COMMANDS',
       colour = 0xFFFFFF
     )
     emb2 = disnake.Embed(
-      description=f'## ✅ </guild create:1220132312554147962> **(Custa 100 <:blank:1124439750208655500>)**\n> Crie sua própria guilda. Você ganhará uma aba de estatísticas da guilda, um cargo personalizado e poderá convidar outros usuários. **Os membros da sua guilda podem entrar na sua sala privada sem você precisar convidá-los com </room:1225204130730217545>**',
+      description=f'## ✅ </guild create:1220132312554147962> **(Costs 100 <:blank:1124439750208655500>)**\n> Create your own guild. You will earn a guild statistics tab, a custom role, and will be able to invite other users. **Your guild members can enter your private room without you needing to invite them with </room:1225204130730217545>**',
       colour = 0x33FF33
     )
     emb3 = disnake.Embed(
-      description=f'## ✅ </guild invite:1220132312554147962> **(Custa 5 <:blank:1124439750208655500>)**\n> Convida um usuário para sua guilda. Só é possível convidar um usuário por vez e você gastará blanks mesmo que ele não aceite o convite.',
+      description=f'## ✅ </guild invite:1220132312554147962> **(Costs 5 <:blank:1124439750208655500>)**\n> Invites a user to your guild. You can only invite one user at a time and you will spend blanks even if they do not accept the invitation.',
       colour = 0x33FF33
     )
     emb4 = disnake.Embed(
-      description=f'## ✅ </guild leave:1220132312554147962>\n> Faz você sair da sua guilda atual',
+      description=f'## ✅ </guild leave:1220132312554147962>\n> Makes you leave your current guild',
       colour = 0x33FF33
     )
     emb5 = disnake.Embed(
-      description=f'## ✅ </guild kick:1220132312554147962>\n> Expulsa um usuário da sua guilda',
+      description=f'## ✅ </guild kick:1220132312554147962>\n> Kicks a user from your guild',
       colour = 0x33FF33
     )
 
     embn1 = disnake.Embed(
-      description=f'## <:MP_LOCK:1230985696353714237> 💠 COMANDOS DE GUILDA\n> Desbloqueia com um <@&1230869225640562698>',
+      description=f'## <:MP_LOCK:1230985696353714237> 💠 GUILD COMMANDS\n> Unlocks with a <@&1230869225640562698>',
       colour = 0xed3325
     )
 	

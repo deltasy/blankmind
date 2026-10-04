@@ -54,14 +54,14 @@ async def mode_format(user, acid, uid, mode=''):
   if 'Pomodoro' in mode_texts: 
     try: pomo_studytime = udb.find_one({'uid': int(uid)})['cycles']['pomodoro'][0]
     except: pomo_studytime = 25
-    subject = '📖 Estudo'
-    mode_texts = f'\n\n> {subject}\n> Acaba **<t:{int((datetime.now() + timedelta(minutes=pomo_studytime)).timestamp())}:R>**' + mode_texts
+    subject = '📖 Study'
+    mode_texts = f'\n\n> {subject}\n> Ends **<t:{int((datetime.now() + timedelta(minutes=pomo_studytime)).timestamp())}:R>**' + mode_texts
 
-    if acid and mode != 'ignore': # Se o usuario tiver ciclo pomodoro, inicie a task
+    if acid and mode != 'ignore': # If user has pomodoro cycle, start task
       task = asyncio.create_task(nextCycle(uid, pomo_studytime))
       pomo_tasks[uid] = task
 
-  elif 'Ciclo' in mode_texts:
+  elif 'Cycle' in mode_texts:
     this_day = day_name()
 
     try:
@@ -79,19 +79,19 @@ async def mode_format(user, acid, uid, mode=''):
       
       pomo_studytime = ucycles['custom_cycles'][uid][this_day][subject]
 
-      mode_texts = f'\n\n> **{subject}**\n> Acaba **<t:{int((datetime.now() + timedelta(hours=pomo_studytime[0], minutes=pomo_studytime[1])).timestamp())}:R>**' + mode_texts
+      mode_texts = f'\n\n> **{subject}**\n> Ends **<t:{int((datetime.now() + timedelta(hours=pomo_studytime[0], minutes=pomo_studytime[1])).timestamp())}:R>**' + mode_texts
 
       if acid and mode != 'ignore':
         task = asyncio.create_task(nextCycle(uid, pomo_studytime[0] * 60 + pomo_studytime[1]))
         pomo_tasks[uid] = task
 
     except: 
-      try: # Checkpointed inválido
+      try: # Invalid checkpointed
         del ucycles['custom_cycles'][uid][this_day]["CHECKPOINTED"]
         with open('jsons/usercycles.json', 'w') as file: jdump(ucycles, file, indent=2)
       except: pass
 
-      mode_texts = f'\n\n- Você ainda não configurou seu ciclo para **hoje ({this_day})**. Use o comando </cycle set:1225490700557090857>' + mode_texts
+      mode_texts = f'\n\n- You haven\'t configured your cycle for **today ({this_day})** yet. Use the command </cycle set:1225490700557090857>' + mode_texts
   
   return [mode_texts, subject, pomo_studytime]
 
@@ -99,9 +99,9 @@ def day_name():
   fuse = pytz.timezone("America/Sao_Paulo")
   now = datetime.now(fuse)
 
-  # Obter a data atual
+  # Get current date
   eng_data = now.date().strftime("%A")
-  br_data = {"Monday": "Segunda", "Tuesday": "Terça", "Wednesday": "Quarta", 'Thursday': "Quinta", 'Friday': 'Sexta', 'Saturday': 'Sábado', 'Sunday': 'Domingo'}
+  br_data = {"Monday": "Monday", "Tuesday": "Tuesday", "Wednesday": "Wednesday", 'Thursday': "Thursday", 'Friday': 'Friday', 'Saturday': 'Saturday', 'Sunday': 'Sunday'}
   return br_data[eng_data]
 
 async def detectModes(member, oper='active'):
@@ -118,12 +118,12 @@ async def detectModes(member, oper='active'):
 		  
          modes = [mode for mode, val in mlist.items() if val == 1]
 		  
-      except: # Nunca setou modes
+      except: # Never set modes
         udb.update_one({'uid': member.id}, {'$set': {'modelist': {
-			'focado': 0,
+			'focused': 0,
 			'pomodoro': 0,
-			'ciclodeestudos': 0,
-			'caverna': 1
+			'studycycle': 0,
+			'cave': 1
         }}})
         return ''
 		  
@@ -132,9 +132,9 @@ async def detectModes(member, oper='active'):
         study, wait = udata['cycles']['pomodoro']
         pomodisp = f'{study}/{wait}'
 
-      except: # Se não tiver um pomodoro setado, crie um
+      except: # If pomodoro not set, create one
         with open('jsons/usercycles.json', 'r') as file: ucycles = jload(file)
-        ucycles['pomodoro'][str(member.id)] = {"📖 Estudo": 25, "💤 Descanso": 5}
+        ucycles['pomodoro'][str(member.id)] = {"📖 Study": 25, "💤 Rest": 5}
         with open('jsons/usercycles.json', 'w') as file: jdump(ucycles, file, indent=2)
 
         udb.update_one({'uid': member.id}, {
@@ -146,7 +146,7 @@ async def detectModes(member, oper='active'):
         })
         pomodisp = '25/5'
 
-      connect_messages = {'focado': '🎯 Focado', 'pomodoro': f'🍅 Pomodoro {pomodisp}', 'ciclodeestudos': '📀 Ciclo customizado'}
+      connect_messages = {'focused': '🎯 Focused', 'pomodoro': f'🍅 Pomodoro {pomodisp}', 'studycycle': '📀 Custom cycle'}
       
       if oper != 'get':
         rFocus = getSv('rFocus')
@@ -182,7 +182,7 @@ async def nextCycle(uid, wait):
     olde_split = old_description.replace('> ', '').split('\n')
     original_stats = olde_split[3:5]
 
-    if any([word for word in pause_words if word in ujson[4].lower()]): # Adicionar quantidade de descanso finalizada
+    if any([word for word in pause_words if word in ujson[4].lower()]): # Add finished rest amount
       ujson[5] += ujson[3]
 
     current_modes = await detectModes(int(uid), 'get')
@@ -190,7 +190,7 @@ async def nextCycle(uid, wait):
     with open('jsons/usercycles.json', 'r') as file: ucycles = jload(file)
     
     if 'Pomodoro' in current_modes: current_cycle = ucycles['pomodoro'][uid]
-    elif 'Ciclo' in current_modes: current_cycle = ucycles['custom_cycles'][uid][day_name()]
+    elif 'Cycle' in current_modes: current_cycle = ucycles['custom_cycles'][uid][day_name()]
 
     ckeys = list(current_cycle.keys())
     
@@ -198,8 +198,8 @@ async def nextCycle(uid, wait):
 
     try:
       ujson[4] = ckeys[ckeys.index(ujson[4]) + 1]
-    except: # Ciclo reiniciado
-      if 'Ciclo' in current_modes:
+    except: # Cycle restarted
+      if 'Cycle' in current_modes:
         old_embed.colour = 0x33FF33
         old_description = old_description.replace(':dvd:', ':dvd: <:yes:1132703714256359584>')
 
@@ -208,12 +208,12 @@ async def nextCycle(uid, wait):
 
     ujson[2] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    if 'Pomodoro' in current_modes: ujson[3] = current_cycle[ujson[4]] # Próximo status
-    elif 'Ciclo' in current_modes: 
+    if 'Pomodoro' in current_modes: ujson[3] = current_cycle[ujson[4]] # Next status
+    elif 'Cycle' in current_modes: 
       times = current_cycle[ujson[4]]
       ujson[3] = times[0] * 60 + times[1]
 
-    replaces = ['**' + ujson[4] + '**', f'Acaba **<t:{int((datetime.now() + timedelta(minutes=ujson[3])).timestamp())}:R>**']
+    replaces = ['**' + ujson[4] + '**', f'Ends **<t:{int((datetime.now() + timedelta(minutes=ujson[3])).timestamp())}:R>**']
 
     for i in range(len(replaces)):
       old_description = old_description.replace(original_stats[i], replaces[i])
@@ -264,9 +264,9 @@ async def calltime(uid, channel, chat, bot):
     try:
       userobj = await guild.fetch_member(int(uid))
     except:
-      print(f'{uid} é um membro desconhecido em calltime')
+      print(f'{uid} is an unknown member in calltime')
 
-    if uid in camera_states: # Cancelar o temporizador de detecção de camera
+    if uid in camera_states: # Cancel camera detection timer
       await disableCameradetect(uid)
 
     if not userobj:
@@ -278,16 +278,16 @@ async def calltime(uid, channel, chat, bot):
       with open('jsons/calls.json', 'w') as file: jdump(cdb, file, indent=2)
       with open('jsons/callspomo.json', 'w') as file: jdump(cpdb, file, indent=2)
 
-    if suid in cpdb: # É um pomodoro
+    if suid in cpdb: # Is a pomodoro
       ujson = cpdb[suid]
 
-      if any([word for word in pause_words if word in ujson[4].lower()]): # Se sair no meio da pausa, considere a pausa atual como tempo descansado
+      if any([word for word in pause_words if word in ujson[4].lower()]): # If leave during pause, consider current pause as rested time
         ujson[5] += (datetime.now() - datetime.strptime(ujson[2], "%Y-%m-%d %H:%M:%S")).total_seconds() // 60
 
-      if ujson[5] > 10: rest_time = f'\n> 💤 E descansou **{timeString(ujson[5])}**'
+      if ujson[5] > 10: rest_time = f'\n> 💤 And rested **{timeString(ujson[5])}**'
       else: rest_time = ''
 
-      start_time = datetime.strptime(ujson[0], "%Y-%m-%d %H:%M:%S") + timedelta(minutes=ujson[5]) # Descontando o tempo descansado
+      start_time = datetime.strptime(ujson[0], "%Y-%m-%d %H:%M:%S") + timedelta(minutes=ujson[5]) # Discounting rested time
       totaltime = datetime.now() - start_time
       mins = totaltime.total_seconds() // 60
 
@@ -305,20 +305,20 @@ async def calltime(uid, channel, chat, bot):
 
     if channel == None: cinfo = ''
     elif chat == inCave: 
-      cinfo = f' em sua caverna'
+      cinfo = f' in your cave'
       await bot.get_channel(int(channel)).delete()
 		
-    else: cinfo = f' em <#{channel}>'
+    else: cinfo = f' in <#{channel}>'
 
     if mins < 10:
       embed = Embed(
-        description=f':warning: Ficou **menos de 10 minutos**{cinfo}, então não recebeu nenhuma recompensa',
+        description=f':warning: Stayed **less than 10 minutes**{cinfo}, so received no reward',
         colour=0xed3325,
       )
 
       delay = 10
     
-      msg = await chat.send(f'<@{uid}> **Esse aviso sumirá <t:{int((datetime.now() + timedelta(seconds=delay)).timestamp())}:R>**', embed=embed)
+      msg = await chat.send(f'<@{uid}> **This warning will disappear <t:{int((datetime.now() + timedelta(seconds=delay)).timestamp())}:R>**', embed=embed)
       await msg.delete(delay=delay)
 
     else:
@@ -332,7 +332,7 @@ async def calltime(uid, channel, chat, bot):
         valweek = readSet(uid, 'timed.week.blank')
 
         embed = Embed(
-          description=f'ㅤ\nEstudou por **{timeString(mins)}** em <#{channel}> com a **câmera ativada**\n{newBlank([val, rew])}',
+          description=f'ㅤ\nStudied for **{timeString(mins)}** in <#{channel}> with **camera on**\n{newBlank([val, rew])}',
           colour=0x0072DC,
         )
     
@@ -357,7 +357,7 @@ async def calltime(uid, channel, chat, bot):
         valweek = readSet(uid, 'timed.week.blank')
 
         embed = Embed(
-          description=f'ㅤ\nEstudou por **{timeString(mins)}**{cinfo}{rest_time}\n{newBlank([val, rew])}',
+          description=f'ㅤ\nStudied for **{timeString(mins)}**{cinfo}{rest_time}\n{newBlank([val, rew])}',
           colour=0x0072DC,
         )
 
@@ -383,7 +383,7 @@ async def calltime(uid, channel, chat, bot):
     try: 
       del cdb[suid]
       with open('jsons/calls.json', 'w') as file: jdump(cdb, file, indent=2)
-    except: # O usuario está em cpdb
+    except: # User is in cpdb
       try: 
         del cpdb[suid]
         with open('jsons/callspomo.json', 'w') as file: jdump(cpdb, file, indent=2)
@@ -401,7 +401,7 @@ async def callgrouptime(uid, channel, chat):
 	  
     cname = channel.name
 
-    if 'Caverna Pessoal' in cname: chat = getSv('cCaveCalls')
+    if 'Personal Cave' in cname: chat = getSv('cCaveCalls')
 
     try:
       msg = await chat.fetch_message(cgdb[cid]['msg'])
@@ -426,12 +426,12 @@ async def callgrouptime(uid, channel, chat):
 
   valid_users = [key for key in cgdb[cid].keys() if key.isdigit()]
 
-  if '🎯' in cname: [asyncio.create_task(detectModes(int(u), 'focuschannel')) for u in valid_users] # Sala privada focada (Todos estão no modo focado)
-  else: [asyncio.create_task(detectModes(int(u))) for u in valid_users] # Situação normal (Tirar apenas quem tem a config de foco ativada)
+  if '🎯' in cname: [asyncio.create_task(detectModes(int(u), 'focuschannel')) for u in valid_users] # Focused private room (All are in focus mode)
+  else: [asyncio.create_task(detectModes(int(u))) for u in valid_users] # Normal situation (Only remove those with focus config enabled)
 
 
   cMusic = getSv('cMusic')
-  [asyncio.create_task(simple_overwrite(u, cMusic, False)) for u in valid_users] # Desabilitar chat de musica para todos
+  [asyncio.create_task(simple_overwrite(u, cMusic, False)) for u in valid_users] # Disable music chat for everyone
 	
   guild = channel.guild
 
@@ -441,14 +441,14 @@ async def callgrouptime(uid, channel, chat):
     )
 
     if len(times) - 1 > 1:
-      embed.description = f'> :boom::anger: <@{uid}>\n> :gem: **Bônus: +0.0{len(times) - 2}** <:blank:1124439750208655500>**/min**\n▬▬▬▬▬▬▬▬▬▬▬▬\n:warning: Ficaram **menos de 10 minutos** conectados a **{cname}**, então não receberam nenhuma recompensa'
+      embed.description = f'> :boom::anger: <@{uid}>\n> :gem: **Bonus: +0.0{len(times) - 2}** <:blank:1124439750208655500>**/min**\n▬▬▬▬▬▬▬▬▬▬▬▬\n:warning: Stayed **less than 10 minutes** connected to **{cname}**, so received no reward'
       await chat.send(', '.join([f'<@{i}>' for i in valid_users]), embed=embed)
       
     else:
-      embed.description = f':warning: Ficou **menos de 10 minutos** em **{cname}**, então não recebeu nenhuma recompensa'
+      embed.description = f':warning: Stayed **less than 10 minutes** in **{cname}**, so received no reward'
       delay = 10 
       member_display = ', '.join([f'<@{i}>' for i in valid_users])
-      msg = await chat.send(member_display + f' **Esse aviso sumirá<t:{int((datetime.now() + timedelta(seconds=delay)).timestamp())}:R>**', embed=embed)
+      msg = await chat.send(member_display + f' **This warning will disappear <t:{int((datetime.now() + timedelta(seconds=delay)).timestamp())}:R>**', embed=embed)
       await msg.delete(delay=delay)
 
     del cgdb[cid]
@@ -475,7 +475,7 @@ async def callgrouptime(uid, channel, chat):
 		
         valweek = readSet(uid, 'timed.week.blank')
       
-        utimes += f'<@{uid2}> estudou **{timeString(uvtime)}**\n{newBlank([val, rew])}\n▬▬▬▬▬▬\n'
+        utimes += f'<@{uid2}> studied **{timeString(uvtime)}**\n{newBlank([val, rew])}\n▬▬▬▬▬▬\n'
 
         if '💠' in cname:
           has_guild = udb.find_one({'uid': int(uid2), 'guild': {'$exists': True}})
@@ -499,10 +499,10 @@ async def callgrouptime(uid, channel, chat):
     utimes = utimes[:-7]
 
     if vault < 0.1: vdisp = ''
-    else: vdisp = f'\n> <:guildvault:1233430694231932959> **Cofre:** +{round(vault, 1)} <:blank:1124439750208655500>'
+    else: vdisp = f'\n> <:guildvault:1233430694231932959> **Vault:** +{round(vault, 1)} <:blank:1124439750208655500>'
   
     if len(times) - 1 > 1:
-      utimes = f'### {cname}\n> :boom::anger: <@{uid}>{vdisp}\n> :gem: **Bônus:** +0.0{len(times) - 2} <:blank:1124439750208655500>/min\n▬▬▬▬▬▬▬▬▬▬▬▬\n' + utimes
+      utimes = f'### {cname}\n> :boom::anger: <@{uid}>{vdisp}\n> :gem: **Bonus:** +0.0{len(times) - 2} <:blank:1124439750208655500>/min\n▬▬▬▬▬▬▬▬▬▬▬▬\n' + utimes
     else:
       utimes = f'### {cname}{vdisp}\n\n' + utimes
       
@@ -536,17 +536,17 @@ async def state(user, before, after, chats, bot, mode=''):
   bcid, acid = None, None
   if after.channel is not None:
     acid = str(after.channel.id)
-    if 'Caverna Pessoal' in after.channel.name: 
+    if 'Personal Cave' in after.channel.name: 
       cCalls = cCaveCalls
 
   if before.channel is not None:
     bcid = str(before.channel.id)
-    if 'Caverna Pessoal' in before.channel.name: 
+    if 'Personal Cave' in before.channel.name: 
       cCalls = cCaveCalls
 
   if acid == str(cCamera.id) and not mode:
     embed = Embed(
-      description=f'{user.mention} se conectou a <#{1136470255473000480}>.\n\n> **Se não ativar a câmera ou compartilhar tela, será desconectado em breve.**',
+      description=f'{user.mention} connected to <#{1136470255473000480}>.\n\n> **If you don\'t turn on the camera or share screen, you will be disconnected soon.**',
       colour=0xFFBD00
     )
     warn = await cCalls.send(embed=embed)
@@ -590,7 +590,7 @@ async def state(user, before, after, chats, bot, mode=''):
     try: imgprof = user.avatar.url
     except: imgprof = 'https://assets.mofoprod.net/network/images/discord.width-250.jpg'
         
-    if acid == str(cRoom.id): # Se user criou uma nova sala privada
+    if acid == str(cRoom.id): # If user created a new private room
       overwrites = {
           guild.default_role: Dperms(connect=False),
           user: Dperms(connect=True),
@@ -604,7 +604,7 @@ async def state(user, before, after, chats, bot, mode=''):
         colour=0xffffff
       )
 
-      # Verificar se tem guilda
+      # Check if has guild
       guild_user = udb.find_one({'uid': user.id})
       guild_room_exist, uguild = None, None
       try:
@@ -614,23 +614,23 @@ async def state(user, before, after, chats, bot, mode=''):
       except: pass
 
       if rCave in user.roles:
-        vgchannel = await guild.create_voice_channel(f'🗻 ⋯ Caverna Pessoal', category=cGroup_category, overwrites=overwrites)
+        vgchannel = await guild.create_voice_channel(f'🗻 ⋯ Personal Cave', category=cGroup_category, overwrites=overwrites)
 
-        embed.description = f'### **{vgchannel.name}**\n{user.mention} entrou em sua caverna **<t:{int(datetime.now().timestamp())}:R>**{mode_texts}'
+        embed.description = f'### **{vgchannel.name}**\n{user.mention} entered their cave **<t:{int(datetime.now().timestamp())}:R>**{mode_texts}'
 
         started = await cCaveCalls.send(embed=embed)
         asyncio.create_task(detectModes(user))
 
-        if 'Pomodoro' in mode_texts or 'Ciclo' in mode_texts: # Se estiver usando um pomodoro
+        if 'Pomodoro' in mode_texts or 'Cycle' in mode_texts: # If using a pomodoro
           with open('jsons/callspomo.json', 'r') as file: cpdb = jload(file)
 
           try:
-            if 'Ciclo' in mode_texts: pomo_studytime = pomo_studytime[0] * 60 + pomo_studytime[1]
+            if 'Cycle' in mode_texts: pomo_studytime = pomo_studytime[0] * 60 + pomo_studytime[1]
 
             cpdb[uid] = [datetime.now().strftime("%Y-%m-%d %H:%M:%S"), started.id, datetime.now().strftime("%Y-%m-%d %H:%M:%S"), pomo_studytime, subject, 0, vgchannel.id]
             with open('jsons/callspomo.json', 'w') as file: jdump(cpdb, file, indent=2)
 
-          except: # Ciclo de estudos não definido para o dia atual
+          except: # Study cycle not defined for current day
             cdb[uid] = [datetime.now().strftime("%Y-%m-%d %H:%M"), started.id]
             with open('jsons/calls.json', 'w') as file: jdump(cdb, file, indent=2)
         
@@ -640,7 +640,7 @@ async def state(user, before, after, chats, bot, mode=''):
 
         return await user.move_to(vgchannel)
 
-      elif uguild and not guild_room_exist: # A sala dessa guilda ainda não existe
+      elif uguild and not guild_room_exist: # This guild's room doesn't exist yet
         uguild_role = guild.get_role(uguild['guild_role'])
 
         overwrites = {
@@ -656,7 +656,7 @@ async def state(user, before, after, chats, bot, mode=''):
         await asleep(0.5)
         await vgchannel.edit(position=0)
 
-        embed.description = f'### **{vgchannel.name}**\n{user.mention} criou a sala **<t:{int(datetime.now().timestamp())}:R>**\n▬▬▬▬▬▬▬▬▬▬▬▬\n> **Só membros da <@&{uguild["guild_role"]}> podem se conectar**'
+        embed.description = f'### **{vgchannel.name}**\n{user.mention} created the room **<t:{int(datetime.now().timestamp())}:R>**\n▬▬▬▬▬▬▬▬▬▬▬▬\n> **Only members of <@&{uguild["guild_role"]}> can connect**'
 
         embed.set_thumbnail(url='https://media.discordapp.net/attachments/1223022126727041049/1225518032093446224/sala_guilda.png')
        
